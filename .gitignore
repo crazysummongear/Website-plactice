@@ -1,0 +1,47 @@
+# 環境変数ファイル
+.env
+.env.local
+.env.*.local
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.*
+terraform/tfplan
+terraform/*.tfvars
+terraform/*.tfvars.json
+!terraform/example.tfvars
+
+# AWS 認証情報
+~/.aws/credentials
+~/.aws/config
+
+# Node.js
+node_modules/
+npm-debug.log
+npm-debug.log.*
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ビルド出力
+dist/
+build/
+*.tsbuildinfo
+
+# ログ
+*.log
+logs/
+
+# その他
+.cache/
+.turbo/
