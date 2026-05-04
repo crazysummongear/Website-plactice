@@ -19,34 +19,34 @@
 
 ### STEP 1: AWS 認証設定
 
-- [ ] 1.1 AWS Identity Center を有効化
-  - [ ] 1.1.1 Root ユーザーでコンソールにログイン
-  - [ ] 1.1.2 IAM Identity Center を開く
-  - [ ] 1.1.3 有効化ボタンをクリック
-  - [ ] 1.1.4 ユーザーを追加（メールアドレス設定）
-  - [ ] 1.1.5 権限セット「Admin-Permission」を作成
-  - [ ] 1.1.6 ユーザーに権限を割り当て
-  - [ ] 1.1.7 SSO 開始 URL をメモ
+- [x] 1.1 AWS Identity Center を有効化
+  - [x] 1.1.1 Root ユーザーでコンソールにログイン
+  - [x] 1.1.2 IAM Identity Center を開く
+  - [x] 1.1.3 有効化ボタンをクリック
+  - [x] 1.1.4 ユーザーを追加（メールアドレス設定）
+  - [x] 1.1.5 権限セット「Admin-Permission」を作成
+  - [x] 1.1.6 ユーザーに権限を割り当て
+  - [x] 1.1.7 SSO 開始 URL をメモ
 
-- [ ] 1.2 AWS CLI SSO プロファイルを設定
-  - [ ] 1.2.1 `aws configure sso --profile dev` を実行
-  - [ ] 1.2.2 SSO 開始 URL を入力
-  - [ ] 1.2.3 リージョンを `ap-northeast-1` に設定
-  - [ ] 1.2.4 プロファイル名を `dev` に設定
+- [x] 1.2 AWS CLI SSO プロファイルを設定
+  - [x] 1.2.1 `aws configure sso --profile dev` を実行
+  - [x] 1.2.2 SSO 開始 URL を入力
+  - [x] 1.2.3 リージョンを `ap-northeast-1` に設定
+  - [x] 1.2.4 プロファイル名を `dev` に設定
 
-- [ ] 1.3 認証を確認
-  - [ ] 1.3.1 `aws sso login --profile dev` を実行
-  - [ ] 1.3.2 `aws sts get-caller-identity --profile dev` で疎通確認
+- [x] 1.3 認証を確認
+  - [x] 1.3.1 `aws sso login --profile dev` を実行
+  - [x] 1.3.2 `aws sts get-caller-identity --profile dev` で疎通確認
 
-**完了条件**: `aws sts get-caller-identity --profile dev` が正常に返る
+**完了条件**: `aws sts get-caller-identity --profile dev` が正常に返る ✅ 完了
 
 ---
 
 ### STEP 2: Terraform — インフラ基盤
 
 - [ ] 2.1 Terraform 初期化
-  - [ ] 2.1.1 `terraform init` を実行
-  - [ ] 2.1.2 `.terraform.lock.hcl` が生成されることを確認
+  - [x] 2.1.1 `terraform init` を実行
+  - [x] 2.1.2 `.terraform.lock.hcl` が生成されることを確認
 
 - [ ] 2.2 S3 バケット定義
   - [ ] 2.2.1 フロントエンド用 S3 バケットを定義
@@ -59,9 +59,9 @@
   - [ ] 2.3.3 キャッシュポリシーを設定
 
 - [ ] 2.4 Terraform 検証・デプロイ
-  - [ ] 2.4.1 `terraform validate` を実行
-  - [ ] 2.4.2 `terraform plan` で差分を確認
-  - [ ] 2.4.3 `terraform apply` でリソースを作成
+  - [x] 2.4.1 `terraform validate` を実行
+  - [x] 2.4.2 `terraform plan` で差分を確認
+  - [x] 2.4.3 `terraform apply` でリソースを作成
   - [ ] 2.4.4 CloudFront URL を確認
 
 **完了条件**: CloudFront URL にアクセスして 403 エラーが返る（フロントエンド未デプロイのため）
@@ -387,7 +387,7 @@
 
 | PHASE | STEP | タイトル | 状態 |
 |-------|------|----------|------|
-| 1 | 1 | AWS 認証設定 | ⬜ 未着手 |
+| 1 | 1 | AWS 認証設定 | ✅ 完了 |
 | 1 | 2 | Terraform — インフラ基盤 | ⏳ 進行中 |
 | 1 | 3 | Terraform — DynamoDB + Cognito | ⬜ 未着手 |
 | 1 | 4 | Terraform — Lambda + API Gateway | ⬜ 未着手 |
@@ -398,8 +398,8 @@
 | 1 | 9 | フロントエンド — CSV インポート | ⬜ 未着手 |
 | 1 | 10 | デプロイ・動作確認 | ⬜ 未着手 |
 
-**全体完了度**: 約 **10%**
+**全体完了度**: 約 **20%**
 
 ---
 
-**最終更新**: 2026年5月4日
+**最終更新**: 2026年5月4日（STEP 1 完了、STEP 2 進行中）
