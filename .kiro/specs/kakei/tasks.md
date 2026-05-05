@@ -44,27 +44,42 @@
 
 ### STEP 2: Terraform — インフラ基盤
 
-- [ ] 2.1 Terraform 初期化
+- [x] 2.0 Terraform モジュール構造の作成
+  - [x] 2.0.1 `terraform/modules/` ディレクトリを作成
+  - [x] 2.0.2 各サービス用サブディレクトリを作成（s3, cloudfront, cognito, dynamodb, lambda, api_gateway）
+  - [x] 2.0.3 S3モジュール・CloudFrontモジュールを実装
+  - [x] 2.0.4 `terraform/outputs.tf` を作成
+
+- [x] 2.1 Terraform 初期化
   - [x] 2.1.1 `terraform init` を実行
   - [x] 2.1.2 `.terraform.lock.hcl` が生成されることを確認
 
-- [ ] 2.2 S3 バケット定義
-  - [ ] 2.2.1 フロントエンド用 S3 バケットを定義
-  - [ ] 2.2.2 CSV 一時保存用 S3 バケットを定義
-  - [ ] 2.2.3 バージョニング・暗号化・パブリックアクセスブロックを設定
+- [x] 2.2 S3 バケット定義
+  - [x] 2.2.1 フロントエンド用 S3 バケットを定義
+  - [x] 2.2.2 CSV 一時保存用 S3 バケットを定義
+  - [x] 2.2.3 バージョニング・暗号化・パブリックアクセスブロックを設定
+  - [x] 2.2.4 S3 ライフサイクルポリシーを設定（CSV用：7日後削除）
 
-- [ ] 2.3 CloudFront ディストリビューション定義
-  - [ ] 2.3.1 OAC（Origin Access Control）を設定
-  - [ ] 2.3.2 S3 をオリジンとして設定
-  - [ ] 2.3.3 キャッシュポリシーを設定
+- [x] 2.3 CloudFront ディストリビューション定義
+  - [x] 2.3.1 OAC（Origin Access Control）を設定
+  - [x] 2.3.2 S3 をオリジンとして設定
+  - [x] 2.3.3 キャッシュポリシーを設定
+  - [x] 2.3.4 HTTPS 強制設定
+  - [x] 2.3.5 SPA対応（404/403 → index.html）
 
-- [ ] 2.4 Terraform 検証・デプロイ
+- [x] 2.4 Terraform 検証・デプロイ
   - [x] 2.4.1 `terraform validate` を実行
   - [x] 2.4.2 `terraform plan` で差分を確認
-  - [x] 2.4.3 `terraform apply` でリソースを作成
-  - [ ] 2.4.4 CloudFront URL を確認
+  - [x] 2.4.3 `terraform apply` でリソースを作成（12リソース作成完了）
+  - [x] 2.4.4 CloudFront URL を確認
 
-**完了条件**: CloudFront URL にアクセスして 403 エラーが返る（フロントエンド未デプロイのため）
+**完了条件**: CloudFront URL にアクセスして 403 エラーが返る（フロントエンド未デプロイのため） ✅ 完了
+
+**作成されたリソース**:
+- フロントエンド用S3バケット: `kakei-frontend-dev-839706991336`
+- CSV一時保存用S3バケット: `kakei-csv-temp-dev-839706991336`
+- CloudFront ディストリビューション: `E2LK33Q7R6I7R5`
+- CloudFront URL: `https://drwpbnzy3pzzt.cloudfront.net`
 
 ---
 

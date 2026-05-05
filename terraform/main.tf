@@ -36,3 +36,26 @@ resource "aws_s3_bucket_public_access_block" "terraform_state_test" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+# ========================================
+# モジュール呼び出し
+# ========================================
+
+# S3 バケット（フロントエンド用・CSV用）
+module "s3" {
+  source = "./modules/s3"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
+# CloudFront ディストリビューション
+module "cloudfront" {
+  source = "./modules/cloudfront"
+
+  project_name           = var.project_name
+  environment            = var.environment
+  s3_bucket_id           = module.s3.frontend_bucket_id
+  s3_bucket_arn          = module.s3.frontend_bucket_arn
+  s3_bucket_domain_name  = module.s3.frontend_bucket_domain_name
+}
