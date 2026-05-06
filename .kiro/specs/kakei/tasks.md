@@ -88,8 +88,8 @@
 - [ ] 3.1 DynamoDB テーブル定義
   - [ ] 3.1.1 `KakeiTable` を定義（PK: USER#userId、SK: TX#date#txId）
   - [ ] 3.1.2 `billing_mode = "PAY_PER_REQUEST"` を設定
-  - [ ] 3.1.3 Point-in-Time Recovery を有効化
-  - [ ] 3.1.4 GSI（type-date-index）を定義
+  - [ ] 3.1.3 Point-in-Time Recovery を無効化（コスト削減）
+  - [ ] 3.1.4* GSI（type-date-index）を定義（コスト削減のため実装しない）
 
 - [ ] 3.2 Cognito User Pool 定義
   - [ ] 3.2.1 User Pool を作成
@@ -120,6 +120,7 @@
   - [ ] 4.2.2 `kakei-categories` 関数を定義
   - [ ] 4.2.3 `kakei-csv-import` 関数を定義
   - [ ] 4.2.4 環境変数（TABLE_NAME、BUCKET_NAME）を設定
+  - [ ] 4.2.5 メモリを128MB、タイムアウトを10秒に設定（コスト最適化）
 
 - [ ] 4.3 API Gateway 定義
   - [ ] 4.3.1 REST API を作成
@@ -403,7 +404,7 @@
 | PHASE | STEP | タイトル | 状態 |
 |-------|------|----------|------|
 | 1 | 1 | AWS 認証設定 | ✅ 完了 |
-| 1 | 2 | Terraform — インフラ基盤 | ⏳ 進行中 |
+| 1 | 2 | Terraform — インフラ基盤 | ✅ 完了 |
 | 1 | 3 | Terraform — DynamoDB + Cognito | ⬜ 未着手 |
 | 1 | 4 | Terraform — Lambda + API Gateway | ⬜ 未着手 |
 | 1 | 5 | バックエンド — 共通ライブラリ | ⬜ 未着手 |
@@ -413,8 +414,20 @@
 | 1 | 9 | フロントエンド — CSV インポート | ⬜ 未着手 |
 | 1 | 10 | デプロイ・動作確認 | ⬜ 未着手 |
 
-**全体完了度**: 約 **20%**
+**全体完了度**: 約 **30%**
+
+**📦 STEP 2で作成されたリソース**:
+- フロントエンド用S3バケット: `kakei-frontend-dev-839706991336`
+- CSV一時保存用S3バケット: `kakei-csv-temp-dev-839706991336`
+- CloudFront ディストリビューション: `E2LK33Q7R6I7R5`
+- CloudFront URL: `https://drwpbnzy3pzzt.cloudfront.net`
+
+**💰 コスト最適化方針**:
+- 月額目標: $5 以内（個人学習・個人利用）
+- DynamoDB: GSI不使用、PITR無効化
+- Lambda: メモリ128MB、タイムアウト10秒
+- CloudFront: PriceClass_100（北米・ヨーロッパのみ）
 
 ---
 
-**最終更新**: 2026年5月4日（STEP 1 完了、STEP 2 進行中）
+**最終更新**: 2026年5月6日（コスト最適化方針を反映）
