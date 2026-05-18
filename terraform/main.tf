@@ -59,3 +59,18 @@ module "cloudfront" {
   s3_bucket_arn          = module.s3.frontend_bucket_arn
   s3_bucket_domain_name  = module.s3.frontend_bucket_domain_name
 }
+
+# DynamoDB テーブル
+module "dynamodb" {
+  source = "./modules/dynamodb"
+
+  environment = var.environment
+}
+
+# Cognito User Pool
+module "cognito" {
+  source = "./modules/cognito"
+
+  project_name = var.project_name
+  environment  = var.environment
+}

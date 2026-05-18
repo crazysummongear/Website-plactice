@@ -85,16 +85,16 @@
 
 ### STEP 3: Terraform — DynamoDB + Cognito
 
-- [ ] 3.1 DynamoDB テーブル定義
-  - [ ] 3.1.1 `KakeiTable` を定義（PK: USER#userId、SK: TX#date#txId）
+- [x] 3.1 DynamoDB テーブル定義
+  - [x] 3.1.1 `KakeiTable` を定義（PK: USER#userId、SK: TX#date#txId）
   - [ ] 3.1.2 `billing_mode = "PAY_PER_REQUEST"` を設定
   - [ ] 3.1.3 Point-in-Time Recovery を無効化（コスト削減）
   - [ ] 3.1.4* GSI（type-date-index）を定義（コスト削減のため実装しない）
 
 - [ ] 3.2 Cognito User Pool 定義
-  - [ ] 3.2.1 User Pool を作成
+  - [x] 3.2.1 User Pool を作成
   - [ ] 3.2.2 メール検証を必須に設定
-  - [ ] 3.2.3 パスワードポリシーを設定（最小12文字）
+  - [x] 3.2.3 パスワードポリシーを設定（最小12文字）
   - [ ] 3.2.4 User Pool Client（SPA 用、シークレットなし）を作成
   - [ ] 3.2.5 Callback URL を設定（localhost:5173）
 
