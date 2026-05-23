@@ -74,3 +74,33 @@ module "cognito" {
   project_name = var.project_name
   environment  = var.environment
 }
+
+# Lambda 関数
+module "lambda" {
+  source = "./modules/lambda"
+
+  project_name        = var.project_name
+  environment         = var.environment
+  dynamodb_table_name = module.dynamodb.table_name
+  dynamodb_table_arn  = module.dynamodb.table_arn
+  csv_bucket_name     = module.s3.csv_temp_bucket_id
+  csv_bucket_arn      = module.s3.csv_temp_bucket_arn
+}
+
+# API Gateway
+module "api_gateway" {
+  source = "./modules/api_gateway"
+
+  project_name                   = var.project_name
+  environment                    = var.environment
+  cognito_user_pool_arn          = module.cognito.user_pool_arn
+  transactions_lambda_arn        = module.lambda.transactions_lambda_arn
+  transactions_lambda_name       = module.lambda.transactions_lambda_name
+  transactions_lambda_invoke_arn = module.lambda.transactions_lambda_invoke_arn
+  categories_lambda_arn          = module.lambda.categories_lambda_arn
+  categories_lambda_name         = module.lambda.categories_lambda_name
+  categories_lambda_invoke_arn   = module.lambda.categories_lambda_invoke_arn
+  csv_import_lambda_arn          = module.lambda.csv_import_lambda_arn
+  csv_import_lambda_name         = module.lambda.csv_import_lambda_name
+  csv_import_lambda_invoke_arn   = module.lambda.csv_import_lambda_invoke_arn
+}

@@ -10,8 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  # AWS_PROFILE 環境変数または ~\.aws\credentials から読み込む
-  # profile = var.aws_profile
+  profile = var.aws_profile
   region  = "ap-northeast-1"
 
   default_tags {
