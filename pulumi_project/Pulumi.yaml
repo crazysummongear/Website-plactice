@@ -1,0 +1,3 @@
+name: kakei-pulumi
+runtime: nodejs
+description: Pulumi project converting existing kakei AWS resources to Pulumi for diagram generation.
