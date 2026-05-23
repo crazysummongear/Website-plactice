@@ -87,24 +87,30 @@
 
 - [x] 3.1 DynamoDB テーブル定義
   - [x] 3.1.1 `KakeiTable` を定義（PK: USER#userId、SK: TX#date#txId）
-  - [ ] 3.1.2 `billing_mode = "PAY_PER_REQUEST"` を設定
-  - [ ] 3.1.3 Point-in-Time Recovery を無効化（コスト削減）
+  - [x] 3.1.2 `billing_mode = "PAY_PER_REQUEST"` を設定
+  - [x] 3.1.3 Point-in-Time Recovery を無効化（コスト削減）
   - [ ] 3.1.4* GSI（type-date-index）を定義（コスト削減のため実装しない）
 
-- [ ] 3.2 Cognito User Pool 定義
+- [x] 3.2 Cognito User Pool 定義
   - [x] 3.2.1 User Pool を作成
-  - [ ] 3.2.2 メール検証を必須に設定
+  - [x] 3.2.2 メール検証を必須に設定
   - [x] 3.2.3 パスワードポリシーを設定（最小12文字）
-  - [ ] 3.2.4 User Pool Client（SPA 用、シークレットなし）を作成
-  - [ ] 3.2.5 Callback URL を設定（localhost:5173）
+  - [x] 3.2.4 User Pool Client（SPA 用、シークレットなし）を作成
+  - [x] 3.2.5 Callback URL を設定（localhost:5173）
 
-- [ ] 3.3 Terraform 検証・デプロイ
-  - [ ] 3.3.1 `terraform validate` を実行
-  - [ ] 3.3.2 `terraform plan` で差分を確認
-  - [ ] 3.3.3 `terraform apply` でリソースを作成
-  - [ ] 3.3.4 User Pool ID・Client ID を確認
+- [x] 3.3 Terraform 検証・デプロイ
+  - [x] 3.3.1 `terraform validate` を実行
+  - [x] 3.3.2 `terraform plan` で差分を確認
+  - [x] 3.3.3 `terraform apply` でリソースを作成
+  - [x] 3.3.4 User Pool ID・Client ID を確認
 
-**完了条件**: DynamoDB テーブル・Cognito User Pool が AWS コンソールで確認できる
+**完了条件**: DynamoDB テーブル・Cognito User Pool が AWS コンソールで確認できる ✅ 完了
+
+**作成されたリソース**:
+- DynamoDB テーブル: `KakeiTable` (ARN: arn:aws:dynamodb:ap-northeast-1:839706991336:table/KakeiTable)
+- Cognito User Pool: `kakei-user-pool-dev` (ID: ap-northeast-1_CVGCgVANa)
+- Cognito User Pool Client: `kakei-spa-client-dev` (ID: 9h4g3m651mrs65vta59u3qb4u)
+- Cognito Domain: `kakei-dev-839706991336` (URL: https://kakei-dev-839706991336.auth.ap-northeast-1.amazoncognito.com)
 
 ---
 
@@ -405,7 +411,7 @@
 |-------|------|----------|------|
 | 1 | 1 | AWS 認証設定 | ✅ 完了 |
 | 1 | 2 | Terraform — インフラ基盤 | ✅ 完了 |
-| 1 | 3 | Terraform — DynamoDB + Cognito | ⬜ 未着手 |
+| 1 | 3 | Terraform — DynamoDB + Cognito | ✅ 完了 |
 | 1 | 4 | Terraform — Lambda + API Gateway | ⬜ 未着手 |
 | 1 | 5 | バックエンド — 共通ライブラリ | ⬜ 未着手 |
 | 1 | 6 | バックエンド — Lambda ハンドラ | ⬜ 未着手 |
