@@ -61,3 +61,10 @@ output "terraform_state_test_bucket_id" {
   description = "Terraform状態管理テスト用S3バケットID"
   value       = aws_s3_bucket.terraform_state_test.id
 }
+
+# API Gateway
+output "api_gateway_url" {
+  description = "API Gateway のベース URL"
+  value       = module.api_gateway.base_url
+}
+

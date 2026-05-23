@@ -12,6 +12,8 @@ terraform/tfplan
 terraform/*.tfvars
 terraform/*.tfvars.json
 !terraform/example.tfvars
+terraform/modules/lambda/files/
+
 
 # AWS 認証情報
 ~/.aws/credentials
