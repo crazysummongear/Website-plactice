@@ -1,49 +1,30 @@
-import { useState } from 'react';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
-
-type AuthState = {
-  isAuthenticated: boolean;
-  userId: string | null;
-  idToken: string | null;
-};
+import './App.css';
 
 function App() {
-  const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    userId: null,
-    idToken: null,
-  });
-
-  const handleLogin = (userId: string, idToken: string) => {
-    setAuthState({
-      isAuthenticated: true,
-      userId,
-      idToken,
-    });
-  };
-
-  const handleLogout = () => {
-    setAuthState({
-      isAuthenticated: false,
-      userId: null,
-      idToken: null,
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {authState.isAuthenticated ? (
-        <Dashboard
-          userId={authState.userId!}
-          idToken={authState.idToken!}
-          onLogout={handleLogout}
-        />
-      ) : (
-        <LoginPage onLogin={handleLogin} />
-      )}
-    </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -29,21 +29,10 @@ locals {
       path = "categories"
       methods = ["GET", "POST"]
     }
-    csv_import = {
-      path = "csv/upload-url"
-      methods = ["POST"]
-    }
   }
 }
 
-# Create resources recursively
-resource "aws_api_gateway_resource" "root" {
-  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
-  parent_id    = aws_api_gateway_rest_api.kakei_api.root_resource_id
-  path_part    = ""
-}
-
-# Iterate over locals.resources
+# Create resources
 resource "aws_api_gateway_resource" "api_resources" {
   for_each = local.resources
   rest_api_id = aws_api_gateway_rest_api.kakei_api.id
@@ -51,7 +40,20 @@ resource "aws_api_gateway_resource" "api_resources" {
   path_part   = each.value.path
 }
 
-# Methods and integrations
+# CSV upload-url resource (nested under root)
+resource "aws_api_gateway_resource" "csv_upload_url" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  parent_id   = aws_api_gateway_rest_api.kakei_api.root_resource_id
+  path_part   = "csv"
+}
+
+resource "aws_api_gateway_resource" "csv_upload_url_nested" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  parent_id   = aws_api_gateway_resource.csv_upload_url.id
+  path_part   = "upload-url"
+}
+
+# Methods and integrations for main resources
 resource "aws_api_gateway_method" "methods" {
   for_each = {
     for item in flatten([
@@ -71,6 +73,15 @@ resource "aws_api_gateway_method" "methods" {
   authorizer_id = aws_api_gateway_authorizer.cognito.id
 }
 
+# CSV upload-url POST method
+resource "aws_api_gateway_method" "csv_upload_post" {
+  rest_api_id   = aws_api_gateway_rest_api.kakei_api.id
+  resource_id   = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method   = "POST"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
+}
+
 # Lambda integration per method
 resource "aws_api_gateway_integration" "lambda_integration" {
   for_each = aws_api_gateway_method.methods
@@ -86,8 +97,17 @@ resource "aws_api_gateway_integration" "lambda_integration" {
     "transactions-DELETE"  = var.transactions_lambda_invoke_arn
     "categories-GET"       = var.categories_lambda_invoke_arn
     "categories-POST"      = var.categories_lambda_invoke_arn
-    "csv_import-POST"      = var.csv_import_lambda_invoke_arn
   }["${each.key}"]
+}
+
+# CSV upload integration
+resource "aws_api_gateway_integration" "csv_upload_integration" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_post.http_method
+  integration_http_method = "POST"
+  type        = "AWS_PROXY"
+  uri         = var.csv_import_lambda_invoke_arn
 }
 
 # CORS configuration (allow all origins for simplicity)
@@ -96,6 +116,19 @@ resource "aws_api_gateway_method_response" "cors" {
   rest_api_id = aws_api_gateway_rest_api.kakei_api.id
   resource_id  = each.value.resource_id
   http_method  = each.value.http_method
+  status_code  = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+  }
+}
+
+# CSV upload CORS response
+resource "aws_api_gateway_method_response" "csv_upload_cors" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_post.http_method
   status_code  = "200"
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin" = true
@@ -117,11 +150,32 @@ resource "aws_api_gateway_integration_response" "cors" {
   }
 }
 
+# CSV upload integration response
+resource "aws_api_gateway_integration_response" "csv_upload_cors" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_post.http_method
+  status_code  = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+  }
+}
+
 # Enable OPTIONS method for CORS preflight
 resource "aws_api_gateway_method" "options" {
   for_each = aws_api_gateway_resource.api_resources
   rest_api_id = aws_api_gateway_rest_api.kakei_api.id
   resource_id  = each.value.id
+  http_method  = "OPTIONS"
+  authorization = "NONE"
+}
+
+# CSV upload OPTIONS method
+resource "aws_api_gateway_method" "csv_upload_options" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
   http_method  = "OPTIONS"
   authorization = "NONE"
 }
@@ -137,11 +191,35 @@ resource "aws_api_gateway_integration" "options_integration" {
   }
 }
 
+# CSV upload OPTIONS integration
+resource "aws_api_gateway_integration" "csv_upload_options_integration" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_options.http_method
+  type        = "MOCK"
+  request_templates = {
+    "application/json" = "{statusCode:200}"
+  }
+}
+
 resource "aws_api_gateway_method_response" "options_response" {
   for_each = aws_api_gateway_method.options
   rest_api_id = aws_api_gateway_rest_api.kakei_api.id
   resource_id  = each.value.resource_id
   http_method  = each.value.http_method
+  status_code  = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+  }
+}
+
+# CSV upload OPTIONS response
+resource "aws_api_gateway_method_response" "csv_upload_options_response" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_options.http_method
   status_code  = "200"
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin" = true
@@ -163,9 +241,27 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
   }
 }
 
+# CSV upload OPTIONS integration response
+resource "aws_api_gateway_integration_response" "csv_upload_options_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.kakei_api.id
+  resource_id  = aws_api_gateway_resource.csv_upload_url_nested.id
+  http_method  = aws_api_gateway_method.csv_upload_options.http_method
+  status_code  = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+  }
+}
+
 # Deployment
 resource "aws_api_gateway_deployment" "deployment" {
-  depends_on = [aws_api_gateway_integration.lambda_integration]
+  depends_on = [
+    aws_api_gateway_integration.lambda_integration,
+    aws_api_gateway_integration.csv_upload_integration,
+    aws_api_gateway_integration.options_integration,
+    aws_api_gateway_integration.csv_upload_options_integration
+  ]
   rest_api_id = aws_api_gateway_rest_api.kakei_api.id
   stage_name  = var.environment
 }

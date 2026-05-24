@@ -1,17 +1,119 @@
-# kakei — 実装タスクリスト
+# Implementation Plan
 
 **プロジェクト名**: kakei（家計管理アプリ）  
-**作成日**: 2026年5月4日
+**作成日**: 2026年5月4日  
+**目標**: 35歳 FIRE 達成を目標とした資産管理アプリの MVP 実装
 
 ---
 
-## タスク形式の説明
+## Overview
+
+このプロジェクトは、個人の家計管理と資産管理を支援するフルスタック Web アプリケーションです。AWS インフラ（Cognito、DynamoDB、Lambda、API Gateway）とモダンなフロントエンド（React + TypeScript）を組み合わせた、スケーラブルで低コストな設計を採用しています。
+
+**実装フェーズ**:
+- **PHASE 1 (MVP)**: 基本的な収支管理機能（3ヶ月）
+- **PHASE 2**: 予算管理・分析機能（6ヶ月）
+- **PHASE 3**: モバイル化・AI 機能（12ヶ月）
+
+現在は PHASE 1 の MVP 実装に注力しており、全体の約 30% が完了しています。
+
+---
+
+## Tasks
+
+### タスク形式の説明
 
 - `- [ ]` = 未着手
 - `- [x]` = 完了
 - `- [-]` = 進行中
 - `- [~]` = キュー中
 - `*` または `\*` = オプションタスク（実装不要な場合あり）
+
+---
+
+## Task Dependency Graph
+
+```json
+{
+  "waves": [
+    {
+      "wave": 1,
+      "title": "Infrastructure Setup",
+      "tasks": ["1.1", "1.2", "1.3"],
+      "status": "completed"
+    },
+    {
+      "wave": 2,
+      "title": "Terraform Infrastructure",
+      "tasks": ["2.0", "2.1", "2.2", "2.3", "2.4"],
+      "status": "completed",
+      "dependsOn": [1]
+    },
+    {
+      "wave": 3,
+      "title": "Database & Auth Setup",
+      "tasks": ["3.1", "3.2", "3.3"],
+      "status": "completed",
+      "dependsOn": [2]
+    },
+    {
+      "wave": 4,
+      "title": "Lambda & API Gateway",
+      "tasks": ["4.1", "4.2", "4.3", "4.4"],
+      "status": "in_progress",
+      "dependsOn": [3]
+    },
+    {
+      "wave": 5,
+      "title": "Backend Common Library",
+      "tasks": ["5.1", "5.2", "5.3", "5.4"],
+      "status": "pending",
+      "dependsOn": [4]
+    },
+    {
+      "wave": 6,
+      "title": "Lambda Handlers",
+      "tasks": ["6.1", "6.2", "6.3", "6.4"],
+      "status": "pending",
+      "dependsOn": [5]
+    },
+    {
+      "wave": 7,
+      "title": "Frontend Authentication",
+      "tasks": ["7.1", "7.2", "7.3", "7.4", "7.5", "7.6"],
+      "status": "pending",
+      "dependsOn": [6]
+    },
+    {
+      "wave": 8,
+      "title": "Frontend Transaction Features",
+      "tasks": ["8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "8.7"],
+      "status": "pending",
+      "dependsOn": [7]
+    },
+    {
+      "wave": 9,
+      "title": "CSV Import Feature",
+      "tasks": ["9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "9.7"],
+      "status": "pending",
+      "dependsOn": [7]
+    },
+    {
+      "wave": 10,
+      "title": "Deployment & Testing",
+      "tasks": ["10.1", "10.2", "10.3", "10.4", "10.5"],
+      "status": "pending",
+      "dependsOn": [8, 9]
+    }
+  ]
+}
+```
+
+**Wave 説明**:
+- **Wave 1-3**: インフラ基盤（✅ 完了）
+- **Wave 4-6**: バックエンド実装（⏳ Wave 4 進行中）
+- **Wave 7-9**: フロントエンド実装（Wave 7 から開始予定）
+- **Wave 10**: 統合テスト・デプロイ（最終段階）
 
 ---
 
@@ -116,31 +218,31 @@
 
 ### STEP 4: Terraform — Lambda + API Gateway
 
-- [ ] 4.1 Lambda IAM ロール定義
-  - [ ] 4.1.1 Lambda 実行ロールを作成
-  - [ ] 4.1.2 DynamoDB テーブルへのアクセス権限を付与（最小権限）
-  - [ ] 4.1.3 S3 バケットへのアクセス権限を付与
+- [x] 4.1 Lambda IAM ロール定義
+  - [x] 4.1.1 Lambda 実行ロールを作成
+  - [x] 4.1.2 DynamoDB テーブルへのアクセス権限を付与（最小権限）
+  - [x] 4.1.3 S3 バケットへのアクセス権限を付与
 
-- [ ] 4.2 Lambda 関数定義
-  - [ ] 4.2.1 `kakei-transactions` 関数を定義
-  - [ ] 4.2.2 `kakei-categories` 関数を定義
-  - [ ] 4.2.3 `kakei-csv-import` 関数を定義
-  - [ ] 4.2.4 環境変数（TABLE_NAME、BUCKET_NAME）を設定
-  - [ ] 4.2.5 メモリを128MB、タイムアウトを10秒に設定（コスト最適化）
+- [x] 4.2 Lambda 関数定義
+  - [x] 4.2.1 `kakei-transactions` 関数を定義
+  - [x] 4.2.2 `kakei-categories` 関数を定義
+  - [x] 4.2.3 `kakei-csv-import` 関数を定義
+  - [x] 4.2.4 環境変数（TABLE_NAME、BUCKET_NAME）を設定
+  - [x] 4.2.5 メモリを128MB、タイムアウトを10秒に設定（コスト最適化）
 
-- [ ] 4.3 API Gateway 定義
-  - [ ] 4.3.1 REST API を作成
-  - [ ] 4.3.2 Cognito Authorizer を設定
-  - [ ] 4.3.3 `/transactions` リソースを定義（GET、POST、PUT、DELETE）
-  - [ ] 4.3.4 `/categories` リソースを定義（GET、POST）
-  - [ ] 4.3.5 `/csv/upload-url` リソースを定義（POST）
-  - [ ] 4.3.6 CORS を設定（フロントエンドドメイン許可）
+- [x] 4.3 API Gateway 定義
+  - [x] 4.3.1 REST API を作成
+  - [x] 4.3.2 Cognito Authorizer を設定
+  - [x] 4.3.3 `/transactions` リソースを定義（GET、POST、PUT、DELETE）
+  - [x] 4.3.4 `/categories` リソースを定義（GET、POST）
+  - [x] 4.3.5 `/csv/upload-url` リソースを定義（POST）
+  - [x] 4.3.6 CORS を設定（フロントエンドドメイン許可）
 
 - [ ] 4.4 Terraform 検証・デプロイ
-  - [ ] 4.4.1 `terraform validate` を実行
-  - [ ] 4.4.2 `terraform plan` で差分を確認
-  - [ ] 4.4.3 `terraform apply` でリソースを作成
-  - [ ] 4.4.4 API Gateway URL を確認
+  - [x] 4.4.1 `terraform validate` を実行
+  - [x] 4.4.2 `terraform plan` で差分を確認
+  - [x] 4.4.3 `terraform apply` でリソースを作成
+  - [x] 4.4.4 API Gateway URL を確認
 
 **完了条件**: API Gateway エンドポイントが AWS コンソールで確認できる
 
@@ -148,30 +250,30 @@
 
 ### STEP 5: バックエンド実装 — 共通ライブラリ
 
-- [ ] 5.1 型定義ファイル作成
-  - [ ] 5.1.1 `backend/src/types/index.ts` を作成
-  - [ ] 5.1.2 `Transaction` 型を定義
-  - [ ] 5.1.3 `Category` 型を定義
-  - [ ] 5.1.4 `ApiResponse` 型を定義
+- [x] 5.1 型定義ファイル作成
+  - [x] 5.1.1 `backend/src/types/index.ts` を作成
+  - [x] 5.1.2 `Transaction` 型を定義
+  - [x] 5.1.3 `Category` 型を定義
+  - [x] 5.1.4 `ApiResponse` 型を定義
 
-- [ ] 5.2 DynamoDB ヘルパー実装
-  - [ ] 5.2.1 `backend/src/lib/dynamo.ts` を作成
-  - [ ] 5.2.2 DynamoDB クライアントを初期化
-  - [ ] 5.2.3 `put()` メソッドを実装
-  - [ ] 5.2.4 `query()` メソッドを実装
-  - [ ] 5.2.5 `update()` メソッドを実装
-  - [ ] 5.2.6 `delete()` メソッドを実装
+- [x] 5.2 DynamoDB ヘルパー実装
+  - [x] 5.2.1 `backend/src/lib/dynamo.ts` を作成
+  - [x] 5.2.2 DynamoDB クライアントを初期化
+  - [x] 5.2.3 `put()` メソッドを実装
+  - [x] 5.2.4 `query()` メソッドを実装
+  - [x] 5.2.5 `update()` メソッドを実装
+  - [x] 5.2.6 `delete()` メソッドを実装
 
-- [ ] 5.3 レスポンスヘルパー実装
-  - [ ] 5.3.1 `backend/src/lib/response.ts` を作成
-  - [ ] 5.3.2 `successResponse()` 関数を実装
-  - [ ] 5.3.3 `errorResponse()` 関数を実装
-  - [ ] 5.3.4 CORS ヘッダーを設定
+- [x] 5.3 レスポンスヘルパー実装
+  - [x] 5.3.1 `backend/src/lib/response.ts` を作成
+  - [x] 5.3.2 `successResponse()` 関数を実装
+  - [x] 5.3.3 `errorResponse()` 関数を実装
+  - [x] 5.3.4 CORS ヘッダーを設定
 
-- [ ] 5.4 認証ヘルパー実装
-  - [ ] 5.4.1 `backend/src/lib/auth.ts` を作成
-  - [ ] 5.4.2 `getUserId()` 関数を実装
-  - [ ] 5.4.3 JWT トークン検証ロジックを実装
+- [x] 5.4 認証ヘルパー実装
+  - [x] 5.4.1 `backend/src/lib/auth.ts` を作成
+  - [x] 5.4.2 `getUserId()` 関数を実装
+  - [x] 5.4.3 JWT トークン検証ロジックを実装
 
 **完了条件**: `npm run build` でビルドエラーなし
 
@@ -179,28 +281,28 @@
 
 ### STEP 6: バックエンド実装 — Lambda ハンドラ
 
-- [ ] 6.1 transactions ハンドラ実装
-  - [ ] 6.1.1 `backend/src/handlers/transactions.ts` を作成
-  - [ ] 6.1.2 `GET /transactions` を実装（フィルタ機能付き）
-  - [ ] 6.1.3 `POST /transactions` を実装（UUID 生成・バリデーション）
-  - [ ] 6.1.4 `PUT /transactions/{id}` を実装
-  - [ ] 6.1.5 `DELETE /transactions/{id}` を実装
+- [x] 6.1 transactions ハンドラ実装
+  - [x] 6.1.1 `backend/src/handlers/transactions.ts` を作成
+  - [x] 6.1.2 `GET /transactions` を実装（フィルタ機能付き）
+  - [x] 6.1.3 `POST /transactions` を実装（UUID 生成・バリデーション）
+  - [x] 6.1.4 `PUT /transactions/{id}` を実装
+  - [x] 6.1.5 `DELETE /transactions/{id}` を実装
 
-- [ ] 6.2 categories ハンドラ実装
-  - [ ] 6.2.1 `backend/src/handlers/categories.ts` を作成
-  - [ ] 6.2.2 `GET /categories` を実装
-  - [ ] 6.2.3 `POST /categories` を実装
+- [x] 6.2 categories ハンドラ実装
+  - [x] 6.2.1 `backend/src/handlers/categories.ts` を作成
+  - [x] 6.2.2 `GET /categories` を実装
+  - [x] 6.2.3 `POST /categories` を実装
 
-- [ ] 6.3 csv-import ハンドラ実装
-  - [ ] 6.3.1 `backend/src/handlers/csv-import.ts` を作成
-  - [ ] 6.3.2 `POST /csv/upload-url` を実装（Presigned URL 発行）
-  - [ ] 6.3.3 S3 イベントトリガーハンドラを実装
-  - [ ] 6.3.4 CSV パース・DynamoDB 保存ロジックを実装
+- [x] 6.3 csv-import ハンドラ実装
+  - [x] 6.3.1 `backend/src/handlers/csv-import.ts` を作成
+  - [x] 6.3.2 `POST /csv/upload-url` を実装（Presigned URL 発行）
+  - [x] 6.3.3 S3 イベントトリガーハンドラを実装
+  - [x] 6.3.4 CSV パース・DynamoDB 保存ロジックを実装
 
-- [ ] 6.4 ビルド・デプロイ
-  - [ ] 6.4.1 `npm run build` を実行
-  - [ ] 6.4.2 ビルド成果物（`dist/`）を確認
-  - [ ] 6.4.3 `terraform apply` で Lambda をデプロイ
+- [x] 6.4 ビルド・デプロイ
+  - [x] 6.4.1 `npm run build` を実行
+  - [x] 6.4.2 ビルド成果物（`dist/`）を確認
+  - [x] 6.4.3 `terraform apply` で Lambda をデプロイ
 
 **完了条件**: `npm run build` でビルドエラーなし、Lambda が AWS コンソールで確認できる
 
@@ -208,33 +310,33 @@
 
 ### STEP 7: フロントエンド実装 — 認証
 
-- [ ] 7.1 Cognito 認証関数実装
-  - [ ] 7.1.1 `frontend/src/api/auth.ts` を作成
-  - [ ] 7.1.2 `signUp()` 関数を実装
-  - [ ] 7.1.3 `confirmSignUp()` 関数を実装
-  - [ ] 7.1.4 `signIn()` 関数を実装
-  - [ ] 7.1.5 `signOut()` 関数を実装
-  - [ ] 7.1.6 `resetPassword()` 関数を実装
+- [x] 7.1 Cognito 認証関数実装
+  - [x] 7.1.1 `frontend/src/api/auth.ts` を作成
+  - [x] 7.1.2 `signUp()` 関数を実装
+  - [x] 7.1.3 `confirmSignUp()` 関数を実装
+  - [x] 7.1.4 `signIn()` 関数を実装
+  - [x] 7.1.5 `signOut()` 関数を実装
+  - [x] 7.1.6 `resetPassword()` 関数を実装
 
-- [ ] 7.2 認証状態管理フック実装
-  - [ ] 7.2.1 `frontend/src/hooks/useAuth.ts` を作成
-  - [ ] 7.2.2 認証状態（isAuthenticated、user、idToken）を管理
-  - [ ] 7.2.3 ローカルストレージにトークンを保存
+- [x] 7.2 認証状態管理フック実装
+  - [x] 7.2.1 `frontend/src/hooks/useAuth.ts` を作成
+  - [x] 7.2.2 認証状態（isAuthenticated、user、idToken）を管理
+  - [x] 7.2.3 ローカルストレージにトークンを保存
 
 - [ ] 7.3 ログイン画面実装
-  - [ ] 7.3.1 `frontend/src/pages/LoginPage.tsx` を実装
-  - [ ] 7.3.2 React Hook Form + Zod でバリデーション
-  - [ ] 7.3.3 エラーメッセージ表示
-  - [ ] 7.3.4 サインアップリンク追加
+  - [x] 7.3.1 `frontend/src/pages/LoginPage.tsx` を実装
+  - [x] 7.3.2 React Hook Form + Zod でバリデーション
+  - [x] 7.3.3 エラーメッセージ表示
+  - [x] 7.3.4 サインアップリンク追加
 
 - [ ] 7.4 サインアップ画面実装
-  - [ ] 7.4.1 `frontend/src/pages/SignupPage.tsx` を実装
-  - [ ] 7.4.2 メール検証コード入力フロー
-  - [ ] 7.4.3 パスワード確認フィールド
+  - [x] 7.4.1 `frontend/src/pages/SignupPage.tsx` を実装
+  - [x] 7.4.2 メール検証コード入力フロー
+  - [x] 7.4.3 パスワード確認フィールド
 
 - [ ] 7.5 認証ガード実装
-  - [ ] 7.5.1 `frontend/src/components/PrivateRoute.tsx` を作成
-  - [ ] 7.5.2 未認証時のリダイレクト処理
+  - [x] 7.5.1 `frontend/src/components/PrivateRoute.tsx` を作成
+  - [x] 7.5.2 未認証時のリダイレクト処理
 
 - [ ] 7.6 ルーティング設定
   - [ ] 7.6.1 `frontend/src/App.tsx` に React Router を統合
@@ -433,6 +535,72 @@
 - DynamoDB: GSI不使用、PITR無効化
 - Lambda: メモリ128MB、タイムアウト10秒
 - CloudFront: PriceClass_100（北米・ヨーロッパのみ）
+
+---
+
+**最終更新**: 2026年5月6日（コスト最適化方針を反映）
+
+---
+
+## Notes
+
+### 実装上の注意点
+
+1. **AWS コスト管理**
+   - 月額目標: $5 以内（個人学習・個人利用）
+   - DynamoDB: GSI 不使用、PITR 無効化でコスト削減
+   - Lambda: メモリ 128MB、タイムアウト 10 秒に設定
+   - CloudFront: PriceClass_100（北米・ヨーロッパのみ）
+
+2. **セキュリティ**
+   - Cognito User Pool でメール検証を必須化
+   - パスワードポリシー: 最小 12 文字
+   - Lambda IAM ロール: 最小権限の原則に従う
+   - API Gateway: CORS 設定でフロントエンドドメインのみ許可
+
+3. **開発環境**
+   - ローカル開発: `localhost:5173` で Vite 開発サーバー実行
+   - Cognito Callback URL: `http://localhost:5173/callback`
+   - AWS CLI: SSO プロファイル `dev` を使用
+
+4. **デプロイメント**
+   - フロントエンド: S3 + CloudFront で静的ホスティング
+   - バックエンド: Lambda + API Gateway でサーバーレス実装
+   - インフラ: Terraform で IaC 管理
+
+5. **テスト戦略**
+   - ユニットテスト: バックエンド（Lambda ハンドラ）
+   - 統合テスト: API エンドポイント
+   - E2E テスト: CloudFront URL でのフルフロー確認
+
+6. **ドキュメント**
+   - `docs/endpoints.md`: API エンドポイント一覧
+   - `docs/deployment.md`: デプロイ手順
+   - `README.md`: セットアップ・アーキテクチャ概要
+
+### 進捗トラッキング
+
+- **完了度**: 約 30%（STEP 1-3 完了）
+- **次のマイルストーン**: STEP 4 完了時に 40%
+- **MVP 完了目標**: STEP 10 完了時に 100%
+
+### リソース一覧
+
+**AWS リソース**:
+- S3 バケット: `kakei-frontend-dev-839706991336`, `kakei-csv-temp-dev-839706991336`
+- CloudFront: `E2LK33Q7R6I7R5` (URL: `https://drwpbnzy3pzzt.cloudfront.net`)
+- DynamoDB: `KakeiTable`
+- Cognito User Pool: `kakei-user-pool-dev` (ID: `ap-northeast-1_CVGCgVANa`)
+- Cognito Client: `kakei-spa-client-dev` (ID: `9h4g3m651mrs65vta59u3qb4u`)
+- Lambda: `kakei-transactions`, `kakei-categories`, `kakei-csv-import`
+- API Gateway: REST API（エンドポイント: `/transactions`, `/categories`, `/csv/upload-url`）
+
+### トラブルシューティング
+
+- **Lambda デプロイエラー**: `terraform apply` 前に `npm run build` でビルド成功を確認
+- **CORS エラー**: API Gateway の CORS 設定でフロントエンドドメインが許可されているか確認
+- **認証エラー**: Cognito User Pool ID・Client ID が環境変数に正しく設定されているか確認
+- **S3 アクセスエラー**: Lambda IAM ロールに S3 バケットへのアクセス権限があるか確認
 
 ---
 

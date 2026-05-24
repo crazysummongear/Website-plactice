@@ -1,22 +1,29 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import { useAuthContext } from '../context/AuthContext';
 
-interface DashboardProps {
-  userId: string;
-  idToken: string;
-  onLogout: () => void;
-}
+export default function Dashboard() {
+  const { user, logout } = useAuthContext();
 
-export default function Dashboard({ userId, onLogout }: DashboardProps) {
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <div className="app-container">
       {/* Header */}
       <header className="app-header">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">KakeiApp</h1>
+          <h1 className="text-2xl font-bold text-gray-900">kakei</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">ユーザーID: {userId}</span>
+            <span className="text-sm text-gray-600">
+              {user?.email || 'ユーザー'}
+            </span>
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
             >
               ログアウト
@@ -78,7 +85,7 @@ export default function Dashboard({ userId, onLogout }: DashboardProps) {
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>&copy; 2026 KakeiApp. All rights reserved.</p>
+        <p>&copy; 2026 kakei. All rights reserved.</p>
       </footer>
     </div>
   );
