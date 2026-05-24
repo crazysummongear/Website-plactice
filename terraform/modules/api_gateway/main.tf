@@ -1,5 +1,8 @@
 // terraform/modules/api_gateway/main.tf
 
+# データソース
+data "aws_region" "current" {}
+
 # REST API
 resource "aws_api_gateway_rest_api" "kakei_api" {
   name        = "${var.project_name}-${var.environment}-api"
@@ -51,11 +54,15 @@ resource "aws_api_gateway_resource" "api_resources" {
 # Methods and integrations
 resource "aws_api_gateway_method" "methods" {
   for_each = {
-    for r_name, r in local.resources :
-    for m in r.methods : "${r_name}-${m}" => {
-      resource_id = aws_api_gateway_resource.api_resources[r_name].id
-      http_method = m
-    }
+    for item in flatten([
+      for r_name, r in local.resources : [
+        for m in r.methods : {
+          key         = "${r_name}-${m}"
+          resource_id = aws_api_gateway_resource.api_resources[r_name].id
+          http_method = m
+        }
+      ]
+    ]) : item.key => item
   }
   rest_api_id   = aws_api_gateway_rest_api.kakei_api.id
   resource_id    = each.value.resource_id

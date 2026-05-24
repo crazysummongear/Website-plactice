@@ -67,6 +67,14 @@ resource "aws_cognito_user_pool" "kakei" {
   #   attributes_require_verification_before_update = ["email"]
   # }
 
+  # ========================================
+  # ライフサイクル設定
+  # ========================================
+  # スキーマは作成後変更不可のため、変更を無視
+  lifecycle {
+    ignore_changes = [schema]
+  }
+
   tags = {
     Name        = "kakei-user-pool"
     Environment = var.environment
