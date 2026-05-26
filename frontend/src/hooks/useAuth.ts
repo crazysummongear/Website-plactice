@@ -49,14 +49,15 @@ export function useAuth() {
 
   const tokenCheckIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /**
-   * Store tokens in localStorage
-   */
-  const storeTokens = useCallback((tokens: AuthTokens) => {
+      const storeTokens = useCallback((tokens: AuthTokens, email?: string) => {
     localStorage.setItem(STORAGE_KEYS.ID_TOKEN, tokens.idToken);
     localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
     if (tokens.refreshToken) {
       localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+    }
+    // メールアドレスも保存（MOCK MODEで使用）
+    if (email) {
+      localStorage.setItem('kakei_user_email', email);
     }
   }, []);
 
@@ -67,6 +68,7 @@ export function useAuth() {
     localStorage.removeItem(STORAGE_KEYS.ID_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem('kakei_user_email');
   }, []);
 
   /**
@@ -87,9 +89,11 @@ export function useAuth() {
 
       // 🔧 MOCK MODE: モックトークンの場合はそのまま復元
       if (MOCK_MODE && idToken === 'mock-id-token') {
+        // ローカルストレージからメールアドレスを取得
+        const storedEmail = localStorage.getItem('kakei_user_email');
         const mockUser: User = {
           userId: 'mock-user-123',
-          email: 'test@example.com',
+          email: storedEmail || 'test@example.com',
           createdAt: new Date().toISOString(),
         };
 
@@ -302,8 +306,7 @@ export function useAuth() {
           const mockToken = 'mock-id-token';
           const mockAccessToken = 'mock-access-token';
 
-          localStorage.setItem(STORAGE_KEYS.ID_TOKEN, mockToken);
-          localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, mockAccessToken);
+          storeTokens({ idToken: mockToken, accessToken: mockAccessToken }, email);
 
           setState((prev) => ({
             ...prev,
