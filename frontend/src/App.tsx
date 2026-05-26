@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import BottomNavigation from './components/BottomNavigation';
+import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
@@ -26,59 +28,62 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <AuthProvider>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            
-            {/* Protected routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/dashboard-new"
-              element={
-                <PrivateRoute>
-                  <DashboardPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/transactions"
-              element={
-                <PrivateRoute>
-                  <TransactionListPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/csv-import"
-              element={
-                <PrivateRoute>
-                  <CsvImportPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/categories"
-              element={
-                <PrivateRoute>
-                  <CategoryPage />
-                </PrivateRoute>
-              }
-            />
-            
-            {/* Default redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
-            {/* Catch-all redirect */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dashboard-new"
+                element={
+                  <PrivateRoute>
+                    <DashboardPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/transactions"
+                element={
+                  <PrivateRoute>
+                    <TransactionListPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/csv-import"
+                element={
+                  <PrivateRoute>
+                    <CsvImportPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/categories"
+                element={
+                  <PrivateRoute>
+                    <CategoryPage />
+                  </PrivateRoute>
+                }
+              />
+              
+              {/* Default redirect */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              
+              {/* Catch-all redirect */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+            <BottomNavigation />
+          </ErrorBoundary>
         </AuthProvider>
       </Router>
     </QueryClientProvider>
