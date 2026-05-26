@@ -8,15 +8,35 @@ output "frontend_bucket_id" {
   value       = module.s3.frontend_bucket_id
 }
 
+output "frontend_bucket_arn" {
+  description = "フロントエンド用S3バケットARN"
+  value       = module.s3.frontend_bucket_arn
+}
+
 output "csv_temp_bucket_id" {
   description = "CSV一時保存用S3バケットID"
   value       = module.s3.csv_temp_bucket_id
+}
+
+output "csv_temp_bucket_arn" {
+  description = "CSV一時保存用S3バケットARN"
+  value       = module.s3.csv_temp_bucket_arn
 }
 
 # CloudFront
 output "cloudfront_distribution_id" {
   description = "CloudFront ディストリビューションID"
   value       = module.cloudfront.distribution_id
+}
+
+output "cloudfront_distribution_arn" {
+  description = "CloudFront ディストリビューションARN"
+  value       = module.cloudfront.distribution_arn
+}
+
+output "cloudfront_distribution_domain_name" {
+  description = "CloudFront ディストリビューションドメイン名"
+  value       = module.cloudfront.distribution_domain_name
 }
 
 output "cloudfront_url" {

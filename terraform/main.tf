@@ -53,11 +53,11 @@ module "s3" {
 module "cloudfront" {
   source = "./modules/cloudfront"
 
-  project_name           = var.project_name
-  environment            = var.environment
-  s3_bucket_id           = module.s3.frontend_bucket_id
-  s3_bucket_arn          = module.s3.frontend_bucket_arn
-  s3_bucket_domain_name  = module.s3.frontend_bucket_domain_name
+  project_name          = var.project_name
+  environment           = var.environment
+  s3_bucket_id          = module.s3.frontend_bucket_id
+  s3_bucket_arn         = module.s3.frontend_bucket_arn
+  s3_bucket_domain_name = module.s3.frontend_bucket_domain_name
 }
 
 # DynamoDB テーブル

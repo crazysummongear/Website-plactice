@@ -51,3 +51,74 @@ export interface DynamoDBRecord {
   type: 'TRANSACTION' | 'CATEGORY';
   [key: string]: any;
 }
+
+/**
+ * 収支作成リクエストボディ型
+ */
+export interface CreateTransactionRequest {
+  date: string;
+  category: string;
+  amount: number;
+  incomeExpense: 'INCOME' | 'EXPENSE';
+  memo?: string;
+}
+
+/**
+ * 収支更新リクエストボディ型
+ */
+export interface UpdateTransactionRequest {
+  category?: string;
+  amount?: number;
+  incomeExpense?: 'INCOME' | 'EXPENSE';
+  memo?: string;
+}
+
+/**
+ * 収支クエリパラメータ型
+ */
+export interface TransactionQueryParams {
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  incomeExpense?: 'INCOME' | 'EXPENSE';
+}
+
+/**
+ * カテゴリ作成リクエストボディ型
+ */
+export interface CreateCategoryRequest {
+  name: string;
+  type: 'INCOME' | 'EXPENSE';
+}
+
+/**
+ * 収支サマリー型（ダッシュボード用）
+ */
+export interface TransactionSummary {
+  totalIncome: number;
+  totalExpense: number;
+  balance: number;
+}
+
+/**
+ * 収支一覧レスポンス型
+ */
+export interface TransactionListResponse {
+  items: Transaction[];
+  summary?: TransactionSummary;
+}
+
+/**
+ * カテゴリ一覧レスポンス型
+ */
+export interface CategoryListResponse {
+  items: Category[];
+}
+
+/**
+ * CSV アップロード URL レスポンス型
+ */
+export interface CsvUploadUrlResponse {
+  uploadUrl: string;
+  fileName: string;
+}

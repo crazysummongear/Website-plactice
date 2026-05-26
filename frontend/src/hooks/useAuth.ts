@@ -35,6 +35,9 @@ const TOKEN_CHECK_INTERVAL = 5 * 60 * 1000;
  * @returns Authentication state and functions
  */
 export function useAuth() {
+  // 🔧 MOCK MODE: Cognitoがデプロイされていない場合のモック
+  const MOCK_MODE = import.meta.env.VITE_MOCK_AUTH === 'true';
+
   const [state, setState] = useState<AuthState>({
     isAuthenticated: false,
     user: null,
@@ -82,6 +85,26 @@ export function useAuth() {
         return;
       }
 
+      // 🔧 MOCK MODE: モックトークンの場合はそのまま復元
+      if (MOCK_MODE && idToken === 'mock-id-token') {
+        const mockUser: User = {
+          userId: 'mock-user-123',
+          email: 'test@example.com',
+          createdAt: new Date().toISOString(),
+        };
+
+        setState((prev) => ({
+          ...prev,
+          isAuthenticated: true,
+          user: mockUser,
+          idToken,
+          accessToken,
+          loading: false,
+          error: null,
+        }));
+        return;
+      }
+
       // Check if token is expired
       if (authApi.isTokenExpired(idToken)) {
         clearTokens();
@@ -112,7 +135,7 @@ export function useAuth() {
         error: error instanceof Error ? error.message : 'Failed to restore session',
       }));
     }
-  }, [clearTokens]);
+  }, [MOCK_MODE, clearTokens]);
 
   /**
    * Check token expiration periodically
@@ -184,6 +207,16 @@ export function useAuth() {
       }));
 
       try {
+        // 🔧 MOCK MODE
+        if (MOCK_MODE) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setState((prev) => ({
+            ...prev,
+            loading: false,
+          }));
+          return;
+        }
+
         await authApi.signUp({ email, password, confirmPassword: password });
 
         setState((prev) => ({
@@ -199,7 +232,7 @@ export function useAuth() {
         throw error;
       }
     },
-    []
+    [MOCK_MODE]
   );
 
   /**
@@ -216,6 +249,16 @@ export function useAuth() {
       }));
 
       try {
+        // 🔧 MOCK MODE
+        if (MOCK_MODE) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setState((prev) => ({
+            ...prev,
+            loading: false,
+          }));
+          return;
+        }
+
         await authApi.confirmSignUp(email, code);
 
         setState((prev) => ({
@@ -231,7 +274,7 @@ export function useAuth() {
         throw error;
       }
     },
-    []
+    [MOCK_MODE]
   );
 
   /**
@@ -248,6 +291,32 @@ export function useAuth() {
       }));
 
       try {
+        // 🔧 MOCK MODE
+        if (MOCK_MODE) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          const mockUser: User = {
+            userId: 'mock-user-123',
+            email,
+            createdAt: new Date().toISOString(),
+          };
+          const mockToken = 'mock-id-token';
+          const mockAccessToken = 'mock-access-token';
+
+          localStorage.setItem(STORAGE_KEYS.ID_TOKEN, mockToken);
+          localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, mockAccessToken);
+
+          setState((prev) => ({
+            ...prev,
+            isAuthenticated: true,
+            user: mockUser,
+            idToken: mockToken,
+            accessToken: mockAccessToken,
+            loading: false,
+            error: null,
+          }));
+          return;
+        }
+
         const tokens = await authApi.signIn({ email, password });
         const user = authApi.getUserFromToken(tokens.idToken);
 
@@ -271,7 +340,7 @@ export function useAuth() {
         throw error;
       }
     },
-    [storeTokens]
+    [MOCK_MODE, storeTokens]
   );
 
   /**

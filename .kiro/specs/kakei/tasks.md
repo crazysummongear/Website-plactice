@@ -238,7 +238,7 @@
   - [x] 4.3.5 `/csv/upload-url` リソースを定義（POST）
   - [x] 4.3.6 CORS を設定（フロントエンドドメイン許可）
 
-- [ ] 4.4 Terraform 検証・デプロイ
+- [x] 4.4 Terraform 検証・デプロイ
   - [x] 4.4.1 `terraform validate` を実行
   - [x] 4.4.2 `terraform plan` で差分を確認
   - [x] 4.4.3 `terraform apply` でリソースを作成
@@ -250,30 +250,30 @@
 
 ### STEP 5: バックエンド実装 — 共通ライブラリ
 
-- [x] 5.1 型定義ファイル作成
-  - [x] 5.1.1 `backend/src/types/index.ts` を作成
+- [~] 5.1 型定義ファイル作成
+  - [~] 5.1.1 `backend/src/types/index.ts` を作成
   - [x] 5.1.2 `Transaction` 型を定義
   - [x] 5.1.3 `Category` 型を定義
   - [x] 5.1.4 `ApiResponse` 型を定義
 
-- [x] 5.2 DynamoDB ヘルパー実装
-  - [x] 5.2.1 `backend/src/lib/dynamo.ts` を作成
-  - [x] 5.2.2 DynamoDB クライアントを初期化
+- [~] 5.2 DynamoDB ヘルパー実装
+  - [~] 5.2.1 `backend/src/lib/dynamo.ts` を作成
+  - [~] 5.2.2 DynamoDB クライアントを初期化
   - [x] 5.2.3 `put()` メソッドを実装
   - [x] 5.2.4 `query()` メソッドを実装
-  - [x] 5.2.5 `update()` メソッドを実装
-  - [x] 5.2.6 `delete()` メソッドを実装
+  - [~] 5.2.5 `update()` メソッドを実装
+  - [~] 5.2.6 `delete()` メソッドを実装
 
 - [x] 5.3 レスポンスヘルパー実装
   - [x] 5.3.1 `backend/src/lib/response.ts` を作成
   - [x] 5.3.2 `successResponse()` 関数を実装
-  - [x] 5.3.3 `errorResponse()` 関数を実装
-  - [x] 5.3.4 CORS ヘッダーを設定
+  - [~] 5.3.3 `errorResponse()` 関数を実装
+  - [~] 5.3.4 CORS ヘッダーを設定
 
 - [x] 5.4 認証ヘルパー実装
   - [x] 5.4.1 `backend/src/lib/auth.ts` を作成
   - [x] 5.4.2 `getUserId()` 関数を実装
-  - [x] 5.4.3 JWT トークン検証ロジックを実装
+  - [~] 5.4.3 JWT トークン検証ロジックを実装
 
 **完了条件**: `npm run build` でビルドエラーなし
 
@@ -281,10 +281,10 @@
 
 ### STEP 6: バックエンド実装 — Lambda ハンドラ
 
-- [x] 6.1 transactions ハンドラ実装
+- [~] 6.1 transactions ハンドラ実装
   - [x] 6.1.1 `backend/src/handlers/transactions.ts` を作成
   - [x] 6.1.2 `GET /transactions` を実装（フィルタ機能付き）
-  - [x] 6.1.3 `POST /transactions` を実装（UUID 生成・バリデーション）
+  - [~] 6.1.3 `POST /transactions` を実装（UUID 生成・バリデーション）
   - [x] 6.1.4 `PUT /transactions/{id}` を実装
   - [x] 6.1.5 `DELETE /transactions/{id}` を実装
 
@@ -295,14 +295,14 @@
 
 - [x] 6.3 csv-import ハンドラ実装
   - [x] 6.3.1 `backend/src/handlers/csv-import.ts` を作成
-  - [x] 6.3.2 `POST /csv/upload-url` を実装（Presigned URL 発行）
-  - [x] 6.3.3 S3 イベントトリガーハンドラを実装
+  - [~] 6.3.2 `POST /csv/upload-url` を実装（Presigned URL 発行）
+  - [~] 6.3.3 S3 イベントトリガーハンドラを実装
   - [x] 6.3.4 CSV パース・DynamoDB 保存ロジックを実装
 
 - [x] 6.4 ビルド・デプロイ
-  - [x] 6.4.1 `npm run build` を実行
-  - [x] 6.4.2 ビルド成果物（`dist/`）を確認
-  - [x] 6.4.3 `terraform apply` で Lambda をデプロイ
+  - [~] 6.4.1 `npm run build` を実行
+  - [~] 6.4.2 ビルド成果物（`dist/`）を確認
+  - [~] 6.4.3 `terraform apply` で Lambda をデプロイ
 
 **完了条件**: `npm run build` でビルドエラーなし、Lambda が AWS コンソールで確認できる
 
@@ -310,20 +310,20 @@
 
 ### STEP 7: フロントエンド実装 — 認証
 
-- [x] 7.1 Cognito 認証関数実装
+- [~] 7.1 Cognito 認証関数実装
   - [x] 7.1.1 `frontend/src/api/auth.ts` を作成
   - [x] 7.1.2 `signUp()` 関数を実装
   - [x] 7.1.3 `confirmSignUp()` 関数を実装
-  - [x] 7.1.4 `signIn()` 関数を実装
-  - [x] 7.1.5 `signOut()` 関数を実装
+  - [~] 7.1.4 `signIn()` 関数を実装
+  - [~] 7.1.5 `signOut()` 関数を実装
   - [x] 7.1.6 `resetPassword()` 関数を実装
 
 - [x] 7.2 認証状態管理フック実装
-  - [x] 7.2.1 `frontend/src/hooks/useAuth.ts` を作成
+  - [~] 7.2.1 `frontend/src/hooks/useAuth.ts` を作成
   - [x] 7.2.2 認証状態（isAuthenticated、user、idToken）を管理
   - [x] 7.2.3 ローカルストレージにトークンを保存
 
-- [ ] 7.3 ログイン画面実装
+- [~] 7.3 ログイン画面実装
   - [x] 7.3.1 `frontend/src/pages/LoginPage.tsx` を実装
   - [x] 7.3.2 React Hook Form + Zod でバリデーション
   - [x] 7.3.3 エラーメッセージ表示
@@ -334,13 +334,13 @@
   - [x] 7.4.2 メール検証コード入力フロー
   - [x] 7.4.3 パスワード確認フィールド
 
-- [ ] 7.5 認証ガード実装
+- [x] 7.5 認証ガード実装
   - [x] 7.5.1 `frontend/src/components/PrivateRoute.tsx` を作成
   - [x] 7.5.2 未認証時のリダイレクト処理
 
-- [ ] 7.6 ルーティング設定
-  - [ ] 7.6.1 `frontend/src/App.tsx` に React Router を統合
-  - [ ] 7.6.2 ルート定義（/login、/signup、/dashboard など）
+- [~] 7.6 ルーティング設定
+  - [~] 7.6.1 `frontend/src/App.tsx` に React Router を統合
+  - [~] 7.6.2 ルート定義（/login、/signup、/dashboard など）
 
 **完了条件**: `npm run build` でビルドエラーなし、ログイン画面が表示される
 
@@ -349,12 +349,12 @@
 ### STEP 8: フロントエンド実装 — 収支機能
 
 - [ ] 8.1 API 呼び出し関数実装
-  - [ ] 8.1.1 `frontend/src/api/transactions.ts` を作成
-  - [ ] 8.1.2 `getTransactions()` 関数を実装
-  - [ ] 8.1.3 `createTransaction()` 関数を実装
+  - [x] 8.1.1 `frontend/src/api/transactions.ts` を作成
+  - [x] 8.1.2 `getTransactions()` 関数を実装
+  - [~] 8.1.3 `createTransaction()` 関数を実装
   - [ ] 8.1.4 `updateTransaction()` 関数を実装
   - [ ] 8.1.5 `deleteTransaction()` 関数を実装
-  - [ ] 8.1.6 JWT を Authorization ヘッダーに付与
+  - [~] 8.1.6 JWT を Authorization ヘッダーに付与
 
 - [ ] 8.2 React Query フック実装
   - [ ] 8.2.1 `frontend/src/hooks/useTransactions.ts` を作成
@@ -365,20 +365,20 @@
 - [ ] 8.3 ダッシュボード実装
   - [ ] 8.3.1 `frontend/src/pages/DashboardPage.tsx` を実装
   - [ ] 8.3.2 月別サマリーカード（収入・支出・残高）
-  - [ ] 8.3.3 カテゴリ別円グラフ
-  - [ ] 8.3.4 月別推移折れ線グラフ
+  - [~] 8.3.3 カテゴリ別円グラフ
+  - [~] 8.3.4 月別推移折れ線グラフ
 
 - [ ] 8.4 収支一覧ページ実装
   - [ ] 8.4.1 `frontend/src/pages/TransactionListPage.tsx` を実装
   - [ ] 8.4.2 収支一覧表示
-  - [ ] 8.4.3 期間・カテゴリフィルタ
-  - [ ] 8.4.4 検索機能
+  - [~] 8.4.3 期間・カテゴリフィルタ
+  - [~] 8.4.4 検索機能
 
 - [ ] 8.5 収支入力フォーム実装
   - [ ] 8.5.1 `frontend/src/components/TransactionForm.tsx` を実装
   - [ ] 8.5.2 React Hook Form + Zod バリデーション
-  - [ ] 8.5.3 日付・カテゴリ・金額・メモ入力フィールド
-  - [ ] 8.5.4 収入/支出ラジオボタン
+  - [~] 8.5.3 日付・カテゴリ・金額・メモ入力フィールド
+  - [~] 8.5.4 収入/支出ラジオボタン
 
 - [ ] 8.6 収支カード実装
   - [ ] 8.6.1 `frontend/src/components/TransactionCard.tsx` を実装
@@ -387,7 +387,7 @@
 
 - [ ] 8.7 Tailwind CSS スタイリング
   - [ ] 8.7.1 スマホファーストのレスポンシブデザイン
-  - [ ] 8.7.2 ダークモード対応（オプション）
+  - [~] 8.7.2 ダークモード対応（オプション）
 
 **完了条件**: `npm run build` でビルドエラーなし、ダッシュボードが表示される
 
@@ -395,13 +395,13 @@
 
 ### STEP 9: フロントエンド実装 — CSV インポート
 
-- [ ] 9.1 CSV API 関数実装
+- [~] 9.1 CSV API 関数実装
   - [ ] 9.1.1 `frontend/src/api/csv.ts` を作成
   - [ ] 9.1.2 `getPresignedUrl()` 関数を実装
   - [ ] 9.1.3 `uploadCsvToS3()` 関数を実装
 
-- [ ] 9.2 CSV インポートページ実装
-  - [ ] 9.2.1 `frontend/src/pages/CsvImportPage.tsx` を実装
+- [~] 9.2 CSV インポートページ実装
+  - [~] 9.2.1 `frontend/src/pages/CsvImportPage.tsx` を実装
   - [ ] 9.2.2 ファイル選択フィールド
   - [ ] 9.2.3 アップロード進捗表示
   - [ ] 9.2.4 成功・エラーメッセージ

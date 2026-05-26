@@ -15,7 +15,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   is_ipv6_enabled     = true
   comment             = "${var.project_name} frontend distribution"
   default_root_object = "index.html"
-  price_class         = "PriceClass_200" # 北米、ヨーロッパ、アジア
+  price_class         = "PriceClass_100" # 北米、ヨーロッパのみ（コスト最適化）
 
   origin {
     domain_name              = var.s3_bucket_domain_name

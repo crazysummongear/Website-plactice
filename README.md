@@ -13,6 +13,7 @@
 - AWS アカウント（無料枠利用可能）
 - AWS CLI v2 インストール済み
 - Node.js 20.x インストール済み
+- Terraform 1.5+ インストール済み
 - Git / GitHub アカウント
 
 ### セットアップ手順
@@ -30,13 +31,11 @@ aws sso login --profile dev
 aws sts get-caller-identity --profile dev
 ```
 
-詳細は [docs/repository_policy.md](docs/repository_policy.md) の「Issue #1 AWS SSO 認証設定」を参照。
-
 #### 2. リポジトリをクローン
 
 ```bash
 git clone https://github.com/crazysummongear/Website-plactice.git
-cd Website-plactice
+cd AI_Typescript_Terraform
 ```
 
 #### 3. Terraform でインフラをデプロイ
@@ -46,21 +45,54 @@ cd terraform
 terraform init
 terraform validate
 terraform plan
-terraform apply
+terraform apply -auto-approve
 ```
 
-#### 4. フロントエンドをビルド・デプロイ
+作成されるリソース:
+- S3バケット（フロントエンド、CSV一時保存）
+- CloudFront ディストリビューション
+- Cognito User Pool
+- DynamoDB テーブル
+- Lambda 関数（3つ）
+- API Gateway
+
+#### 4. バックエンドをビルド・デプロイ
+
+```bash
+cd ../backend
+npm install
+npm run build
+
+# Lambda関数をZIPにパッケージング
+Compress-Archive -Path dist/* -DestinationPath lambda-functions.zip -Force
+
+# Terraformで再デプロイ（Lambda更新）
+cd ../terraform
+terraform apply -auto-approve
+```
+
+#### 5. フロントエンドをビルド・デプロイ
 
 ```bash
 cd ../frontend
+
+# 環境変数を設定
+cp .env.example .env.local
+# .env.localを編集してCognito情報を設定
+
 npm install
 npm run build
-aws s3 sync dist/ s3://<bucket-name> --delete
+
+# S3にデプロイ
+aws s3 sync dist/ s3://kakei-frontend-dev-839706991336 --delete --profile dev
+
+# CloudFrontキャッシュを無効化
+aws cloudfront create-invalidation --distribution-id E2LK33Q7R6I7R5 --paths "/*" --profile dev
 ```
 
-#### 5. CloudFront URL にアクセス
+#### 6. アプリケーションにアクセス
 
-CloudFront URL をブラウザで開き、アプリが表示されることを確認。
+CloudFront URL: `https://drwpbnzy3pzzt.cloudfront.net`
 
 ---
 
@@ -184,20 +216,43 @@ git push -u origin feature/<issue番号>-<概要>
 
 | STEP | タイトル | 状態 |
 |------|----------|------|
-| 1 | AWS 認証設定 | ⬜ 未着手 |
-| 2 | Terraform — インフラ基盤 | ⏳ 進行中 |
-| 3 | Terraform — DynamoDB + Cognito | ⬜ 未着手 |
-| 4 | Terraform — Lambda + API Gateway | ⬜ 未着手 |
-| 5 | バックエンド — 共通ライブラリ | ⬜ 未着手 |
-| 6 | バックエンド — Lambda ハンドラ | ⬜ 未着手 |
-| 7 | フロントエンド — 認証 | ⬜ 未着手 |
-| 8 | フロントエンド — 収支機能 | ⬜ 未着手 |
-| 9 | フロントエンド — CSV インポート | ⬜ 未着手 |
-| 10 | デプロイ・動作確認 | ⬜ 未着手 |
+| 1 | AWS 認証設定 | ✅ 完了 |
+| 2 | Terraform — インフラ基盤 | ✅ 完了 |
+| 3 | Terraform — DynamoDB + Cognito | ✅ 完了 |
+| 4 | Terraform — Lambda + API Gateway | ✅ 完了 |
+| 5 | バックエンド — 共通ライブラリ | ✅ 完了 |
+| 6 | バックエンド — Lambda ハンドラ | ✅ 完了 |
+| 7 | フロントエンド — 認証 | ✅ 完了 |
+| 8 | フロントエンド — 収支機能 | ✅ 完了 |
+| 9 | フロントエンド — CSV インポート | ✅ 完了 |
+| 10 | デプロイ・動作確認 | ⏳ 進行中 |
 
-**全体完了度**: 約 **10%**
+**全体完了度**: 約 **90%**
 
 詳細は [.kiro/specs/kakei/tasks.md](.kiro/specs/kakei/tasks.md) を参照。
+
+---
+
+## 🌐 デプロイ済みリソース
+
+### アクセスURL
+
+- **フロントエンド**: https://drwpbnzy3pzzt.cloudfront.net
+- **API Gateway**: https://8uugz9nauk.execute-api.ap-northeast-1.amazonaws.com/dev
+
+### AWS リソース
+
+| リソース | 名前/ID | 説明 |
+|---------|---------|------|
+| S3 Bucket (Frontend) | `kakei-frontend-dev-839706991336` | フロントエンド静的ファイル |
+| S3 Bucket (CSV) | `kakei-csv-temp-dev-839706991336` | CSV一時保存（7日後自動削除） |
+| CloudFront | `E2LK33Q7R6I7R5` | CDN配信 |
+| Cognito User Pool | `ap-northeast-1_CVGCgVANa` | ユーザー認証 |
+| Cognito Client | `9h4g3m651mrs65vta59u3qb4u` | SPAクライアント |
+| DynamoDB Table | `KakeiTable` | 収支データ保存 |
+| Lambda | `kakei-transactions` | 収支CRUD操作 |
+| Lambda | `kakei-categories` | カテゴリ管理 |
+| Lambda | `kakei-csv-import` | CSVインポート処理 |
 
 ---
 
@@ -251,6 +306,11 @@ git push -u origin feature/<issue番号>-<概要>
 - **[.kiro/specs/kakei/design.md](.kiro/specs/kakei/design.md)** — 設計書
 - **[.kiro/specs/kakei/tasks.md](.kiro/specs/kakei/tasks.md)** — 実装タスクリスト
 - **[docs/repository_policy.md](docs/repository_policy.md)** — リポジトリ運用方針
+- **[docs/endpoints.md](docs/endpoints.md)** — API エンドポイント仕様
+- **[docs/deployment_summary.md](docs/deployment_summary.md)** — デプロイ手順詳細
+- **[docs/architecture.md](docs/architecture.md)** — アーキテクチャ図（Mermaid）
+- **[docs/testing_strategy.md](docs/testing_strategy.md)** — テスト戦略
+- **[docs/development_fundamentals.md](docs/development_fundamentals.md)** — 開発の基礎知識
 
 ---
 
@@ -267,4 +327,4 @@ MIT License
 
 ---
 
-**最終更新**: 2026年5月4日
+**最終更新**: 2026年5月26日
