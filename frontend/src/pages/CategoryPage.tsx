@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface Category {
   id: string;
@@ -24,7 +24,6 @@ const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 export const CategoryPage: React.FC = () => {
-  const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryType, setNewCategoryType] = useState<'income' | 'expense'>('expense');
@@ -62,12 +61,12 @@ export const CategoryPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <button
-                onClick={() => navigate(-1)}
+              <Link
+                to="/dashboard"
                 className="mr-4 text-gray-600 hover:text-gray-900"
               >
                 ← 戻る
-              </button>
+              </Link>
               <h1 className="text-2xl font-bold text-gray-900">カテゴリ管理</h1>
             </div>
             <button
