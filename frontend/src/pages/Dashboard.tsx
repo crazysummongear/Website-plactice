@@ -33,7 +33,7 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="app-main">
+      <main className="app-main pb-20 md:pb-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Navigation Tabs */}
           <nav className="flex gap-8 mb-8 border-b border-gray-200">
