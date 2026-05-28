@@ -63,10 +63,76 @@ export interface TransactionListResponse {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://your-api-gateway-url.execute-api.ap-northeast-1.amazonaws.com/prod';
 
 /**
+ * Mock mode flag
+ */
+const MOCK_MODE = import.meta.env.VITE_MOCK_AUTH === 'true';
+
+/**
+ * Mock transactions data
+ */
+let mockTransactions: Transaction[] = [
+  {
+    id: 'mock-1',
+    userId: 'mock-user-123',
+    date: '2026-05-01',
+    category: '給料',
+    amount: 300000,
+    incomeExpense: 'INCOME',
+    memo: '5月の給料',
+    createdAt: '2026-05-01T00:00:00Z',
+    updatedAt: '2026-05-01T00:00:00Z',
+  },
+  {
+    id: 'mock-2',
+    userId: 'mock-user-123',
+    date: '2026-05-05',
+    category: '食費',
+    amount: 5000,
+    incomeExpense: 'EXPENSE',
+    memo: 'スーパーで買い物',
+    createdAt: '2026-05-05T00:00:00Z',
+    updatedAt: '2026-05-05T00:00:00Z',
+  },
+  {
+    id: 'mock-3',
+    userId: 'mock-user-123',
+    date: '2026-05-10',
+    category: '交通費',
+    amount: 3000,
+    incomeExpense: 'EXPENSE',
+    memo: '電車代',
+    createdAt: '2026-05-10T00:00:00Z',
+    updatedAt: '2026-05-10T00:00:00Z',
+  },
+  {
+    id: 'mock-4',
+    userId: 'mock-user-123',
+    date: '2026-05-15',
+    category: '娯楽',
+    amount: 8000,
+    incomeExpense: 'EXPENSE',
+    memo: '映画とディナー',
+    createdAt: '2026-05-15T00:00:00Z',
+    updatedAt: '2026-05-15T00:00:00Z',
+  },
+  {
+    id: 'mock-5',
+    userId: 'mock-user-123',
+    date: '2026-05-20',
+    category: '光熱費',
+    amount: 12000,
+    incomeExpense: 'EXPENSE',
+    memo: '電気・ガス・水道',
+    createdAt: '2026-05-20T00:00:00Z',
+    updatedAt: '2026-05-20T00:00:00Z',
+  },
+];
+
+/**
  * Get ID token from local storage
  */
 function getIdToken(): string {
-  const idToken = localStorage.getItem('idToken');
+  const idToken = localStorage.getItem('kakei_id_token');
   if (!idToken) {
     throw new Error('Not authenticated');
   }
@@ -97,6 +163,29 @@ export async function getTransactions(
   params: TransactionQueryParams = {}
 ): Promise<TransactionListResponse> {
   try {
+    // 🔧 MOCK MODE
+    if (MOCK_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      let filtered = [...mockTransactions];
+      
+      // Apply filters
+      if (params.startDate) {
+        filtered = filtered.filter((t) => t.date >= params.startDate!);
+      }
+      if (params.endDate) {
+        filtered = filtered.filter((t) => t.date <= params.endDate!);
+      }
+      if (params.category) {
+        filtered = filtered.filter((t) => t.category === params.category);
+      }
+      if (params.incomeExpense) {
+        filtered = filtered.filter((t) => t.incomeExpense === params.incomeExpense);
+      }
+      
+      return { items: filtered };
+    }
+    
     const idToken = getIdToken();
     const queryString = buildQueryString(params);
     
@@ -131,6 +220,22 @@ export async function createTransaction(
   transaction: CreateTransactionRequest
 ): Promise<Transaction> {
   try {
+    // 🔧 MOCK MODE
+    if (MOCK_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      const newTransaction: Transaction = {
+        id: `mock-${Date.now()}`,
+        userId: 'mock-user-123',
+        ...transaction,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      mockTransactions.push(newTransaction);
+      return newTransaction;
+    }
+    
     const idToken = getIdToken();
     
     const response = await fetch(`${API_BASE_URL}/transactions`, {
@@ -167,6 +272,24 @@ export async function updateTransaction(
   updates: UpdateTransactionRequest
 ): Promise<Transaction> {
   try {
+    // 🔧 MOCK MODE
+    if (MOCK_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      const index = mockTransactions.findIndex((t) => t.id === id);
+      if (index === -1) {
+        throw new Error('Transaction not found');
+      }
+      
+      mockTransactions[index] = {
+        ...mockTransactions[index],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      return mockTransactions[index];
+    }
+    
     const idToken = getIdToken();
     
     const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
@@ -198,6 +321,19 @@ export async function updateTransaction(
  */
 export async function deleteTransaction(id: string): Promise<void> {
   try {
+    // 🔧 MOCK MODE
+    if (MOCK_MODE) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      const index = mockTransactions.findIndex((t) => t.id === id);
+      if (index === -1) {
+        throw new Error('Transaction not found');
+      }
+      
+      mockTransactions.splice(index, 1);
+      return;
+    }
+    
     const idToken = getIdToken();
     
     const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {

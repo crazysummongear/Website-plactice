@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import BottomNavigation from './components/BottomNavigation';
+import { TopNavigation } from './components/TopNavigation';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -29,6 +30,7 @@ function App() {
       <Router>
         <AuthProvider>
           <ErrorBoundary>
+            <TopNavigation />
             <Routes>
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
@@ -39,15 +41,15 @@ function App() {
                 path="/dashboard"
                 element={
                   <PrivateRoute>
-                    <Dashboard />
+                    <DashboardPage />
                   </PrivateRoute>
                 }
               />
               <Route
-                path="/dashboard-new"
+                path="/dashboard-old"
                 element={
                   <PrivateRoute>
-                    <DashboardPage />
+                    <Dashboard />
                   </PrivateRoute>
                 }
               />
