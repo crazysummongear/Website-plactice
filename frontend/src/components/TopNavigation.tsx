@@ -3,17 +3,23 @@
  * Displays horizontal navigation menu for desktop screens
  */
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export function TopNavigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
 
   // Don't show navigation on login/signup pages
   if (!isAuthenticated || location.pathname === '/login' || location.pathname === '/signup') {
     return null;
   }
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -61,7 +67,7 @@ export function TopNavigation() {
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600">{user?.email}</span>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
             >
               ログアウト
