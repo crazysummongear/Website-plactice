@@ -8,9 +8,13 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -29,7 +33,7 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1041.0",
     "@aws-sdk/client-s3": "^3.1041.0",
-    "@hookform/resolvers": "^3.4.2",
+    "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-query": "^5.100.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

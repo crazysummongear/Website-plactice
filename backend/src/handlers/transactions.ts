@@ -3,10 +3,10 @@
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
-import { successResponse, errorResponse } from '../lib/response.js';
-import { getUserId } from '../lib/auth.js';
-import { put, query, update, deleteItem, get } from '../lib/dynamo.js';
-import { Transaction } from '../types/index.js';
+import { successResponse, errorResponse } from '../lib/response';
+import { getUserId } from '../lib/auth';
+import { put, query, update, deleteItem, get } from '../lib/dynamo';
+import { Transaction } from '../types/index';
 
 /**
  * GET /transactions - 収支一覧取得

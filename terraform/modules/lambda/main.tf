@@ -172,6 +172,37 @@ resource "aws_lambda_function" "csv_import" {
 }
 
 # ========================================
+# API Gateway からの呼び出し許可
+# ========================================
+
+# Transactions Lambda - API Gateway 呼び出し許可
+resource "aws_lambda_permission" "transactions_api_gateway" {
+  statement_id  = "AllowAPIGatewayInvokeTransactions"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.transactions.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.api_gateway_execution_arn}/*/*"
+}
+
+# Categories Lambda - API Gateway 呼び出し許可
+resource "aws_lambda_permission" "categories_api_gateway" {
+  statement_id  = "AllowAPIGatewayInvokeCategories"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.categories.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.api_gateway_execution_arn}/*/*"
+}
+
+# CSV Import Lambda - API Gateway 呼び出し許可
+resource "aws_lambda_permission" "csv_import_api_gateway" {
+  statement_id  = "AllowAPIGatewayInvokeCsvImport"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.csv_import.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.api_gateway_execution_arn}/*/*"
+}
+
+# ========================================
 # S3 バケット通知の紐付け
 # ========================================
 

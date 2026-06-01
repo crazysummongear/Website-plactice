@@ -31,3 +31,8 @@ variable "csv_bucket_arn" {
   description = "CSV 一時保存用 S3 バケット ARN"
   type        = string
 }
+
+variable "api_gateway_execution_arn" {
+  description = "API Gateway 実行 ARN"
+  type        = string
+}

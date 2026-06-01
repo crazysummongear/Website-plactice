@@ -1,0 +1,12 @@
+{
+  "httpMethod": "GET",
+  "path": "/transactions",
+  "queryStringParameters": null,
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "test-user-123"
+      }
+    }
+  }
+}

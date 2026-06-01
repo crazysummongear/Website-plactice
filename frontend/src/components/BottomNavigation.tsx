@@ -35,6 +35,7 @@ export const BottomNavigation: React.FC = () => {
 
   return (
     <nav 
+      data-testid="bottom-navigation"
       className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg"
       style={{ zIndex: 9999 }}
     >
@@ -45,6 +46,7 @@ export const BottomNavigation: React.FC = () => {
             <button
               key={item.path}
               onClick={() => handleClick(item.path)}
+              data-testid={`${item.path.slice(1)}-bottom-nav-button`}
               className={`flex flex-col items-center justify-center flex-1 h-full border-none bg-transparent cursor-pointer ${
                 isActive
                   ? 'text-blue-600 bg-blue-50'

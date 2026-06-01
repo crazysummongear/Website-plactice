@@ -3,10 +3,10 @@
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
-import { successResponse, errorResponse } from '../lib/response.js';
-import { getUserId } from '../lib/auth.js';
-import { put, query } from '../lib/dynamo.js';
-import { Category } from '../types/index.js';
+import { successResponse, errorResponse } from '../lib/response';
+import { getUserId } from '../lib/auth';
+import { put, query } from '../lib/dynamo';
+import { Category } from '../types/index';
 
 /**
  * GET /categories - カテゴリ一覧取得

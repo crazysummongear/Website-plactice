@@ -79,12 +79,13 @@ module "cognito" {
 module "lambda" {
   source = "./modules/lambda"
 
-  project_name        = var.project_name
-  environment         = var.environment
-  dynamodb_table_name = module.dynamodb.table_name
-  dynamodb_table_arn  = module.dynamodb.table_arn
-  csv_bucket_name     = module.s3.csv_temp_bucket_id
-  csv_bucket_arn      = module.s3.csv_temp_bucket_arn
+  project_name              = var.project_name
+  environment               = var.environment
+  dynamodb_table_name       = module.dynamodb.table_name
+  dynamodb_table_arn        = module.dynamodb.table_arn
+  csv_bucket_name           = module.s3.csv_temp_bucket_id
+  csv_bucket_arn            = module.s3.csv_temp_bucket_arn
+  api_gateway_execution_arn = module.api_gateway.api_gateway_execution_arn
 }
 
 # API Gateway

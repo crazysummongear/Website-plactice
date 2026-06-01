@@ -4,12 +4,12 @@
  */
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuthContext } from '../context/AuthContext';
 
 export function TopNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAuthContext();
 
   // Don't show navigation on login/signup pages
   if (!isAuthenticated || location.pathname === '/login' || location.pathname === '/signup') {
@@ -48,6 +48,7 @@ export function TopNavigation() {
               <Link
                 key={item.path}
                 to={item.path}
+                data-testid={`${item.path.slice(1)}-nav-link`}
                 className={`
                   flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                   ${
@@ -65,9 +66,10 @@ export function TopNavigation() {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{user?.email}</span>
+            <span data-testid="user-email" className="text-sm text-gray-600">{user?.email}</span>
             <button
               onClick={handleLogout}
+              data-testid="logout-button"
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
             >
               ログアウト

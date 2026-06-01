@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuthContext } from '../context/AuthContext';
 
 /**
  * Login form validation schema
@@ -29,7 +29,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated, loading, error: authError } = useAuth();
+  const { login, isAuthenticated, loading, error: authError } = useAuthContext();
 
   // Get the page user was trying to access before being redirected to login
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
@@ -40,6 +40,8 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: 'onSubmit', // 送信時にバリデーションを実行
+    reValidateMode: 'onChange', // 再バリデーションは入力変更時
   });
 
   /**
@@ -77,7 +79,7 @@ export default function LoginPage() {
 
         {/* Error message */}
         {authError && (
-          <div className="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
+          <div data-testid="auth-error" className="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
             <p className="text-sm font-medium text-red-800">{authError}</p>
           </div>
         )}
@@ -92,6 +94,7 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
+              data-testid="email-input"
               placeholder="example@example.com"
               {...register('email')}
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
@@ -100,7 +103,7 @@ export default function LoginPage() {
               disabled={isLoading}
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              <p data-testid="email-error" className="mt-1 text-sm text-red-600">{errors.email.message}</p>
             )}
           </div>
 
@@ -112,6 +115,7 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
+              data-testid="password-input"
               placeholder="••••••••"
               {...register('password')}
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
@@ -120,13 +124,14 @@ export default function LoginPage() {
               disabled={isLoading}
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              <p data-testid="password-error" className="mt-1 text-sm text-red-600">{errors.password.message}</p>
             )}
           </div>
 
           {/* Submit button */}
           <button
             type="submit"
+            data-testid="login-button"
             disabled={isLoading}
             className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
@@ -166,6 +171,7 @@ export default function LoginPage() {
             アカウントをお持ちでないですか？{' '}
             <Link
               to="/signup"
+              data-testid="signup-link"
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
             >
               サインアップ

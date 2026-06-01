@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/**/*.ts --bundle --platform=node --target=node20 --outdir=dist --format=esm",
+    "build": "esbuild src/handlers/transactions.ts --bundle --platform=node --target=node20 --outfile=dist/handlers/transactions.js --format=cjs --external:@aws-sdk/* --external:uuid && esbuild src/handlers/categories.ts --bundle --platform=node --target=node20 --outfile=dist/handlers/categories.js --format=cjs --external:@aws-sdk/* --external:uuid && esbuild src/handlers/csv-import.ts --bundle --platform=node --target=node20 --outfile=dist/handlers/csv-import.js --format=cjs --external:@aws-sdk/* --external:uuid",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },

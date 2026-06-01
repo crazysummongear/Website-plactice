@@ -1,7 +1,7 @@
 // レスポンスヘルパー
 // STEP 5.3: レスポンスヘルパー実装
 
-import { ApiResponse } from '../types/index.js';
+import { ApiResponse } from '../types/index';
 
 /**
  * CORS ヘッダー

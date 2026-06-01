@@ -4,9 +4,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, S3Event } from 'aws-lambda';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { successResponse, errorResponse } from '../lib/response.js';
-import { getUserId } from '../lib/auth.js';
-import { put } from '../lib/dynamo.js';
+import { successResponse, errorResponse } from '../lib/response';
+import { getUserId } from '../lib/auth';
+import { put } from '../lib/dynamo';
 import { v4 as uuidv4 } from 'uuid';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION || 'ap-northeast-1' });

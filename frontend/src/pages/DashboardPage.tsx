@@ -3,7 +3,7 @@
  * Displays financial overview with summary cards and charts
  */
 
-import { useAuth } from '../hooks/useAuth';
+import { useAuthContext } from '../context/AuthContext';
 import {
   useTransactions,
   useTransactionSummary,
@@ -11,7 +11,7 @@ import {
 } from '../hooks/useTransactions';
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   
   // Get current month's date range
   const now = new Date();
@@ -59,8 +59,8 @@ export function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">ダッシュボード</h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 data-testid="dashboard-title" className="text-3xl font-bold text-gray-900">ダッシュボード</h1>
+          <p data-testid="user-greeting" className="mt-2 text-sm text-gray-600">
             {user?.email} さん、こんにちは
           </p>
         </div>
@@ -68,11 +68,11 @@ export function DashboardPage() {
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Income Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="income-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の収入</p>
-                <p className="mt-2 text-3xl font-bold text-green-600">
+                <p data-testid="income-amount" className="mt-2 text-3xl font-bold text-green-600">
                   ¥{summary.totalIncome.toLocaleString('ja-JP')}
                 </p>
               </div>
@@ -95,11 +95,11 @@ export function DashboardPage() {
           </div>
 
           {/* Expense Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="expense-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の支出</p>
-                <p className="mt-2 text-3xl font-bold text-red-600">
+                <p data-testid="expense-amount" className="mt-2 text-3xl font-bold text-red-600">
                   ¥{summary.totalExpense.toLocaleString('ja-JP')}
                 </p>
               </div>
@@ -122,11 +122,12 @@ export function DashboardPage() {
           </div>
 
           {/* Balance Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="balance-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の収支</p>
                 <p
+                  data-testid="balance-amount"
                   className={`mt-2 text-3xl font-bold ${
                     summary.balance >= 0 ? 'text-blue-600' : 'text-red-600'
                   }`}
@@ -156,11 +157,11 @@ export function DashboardPage() {
 
         {/* Category Breakdown */}
         {byCategory.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <div data-testid="category-breakdown" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4">カテゴリ別支出</h2>
             <div className="space-y-3">
               {byCategory.slice(0, 5).map((item) => (
-                <div key={item.category}>
+                <div key={item.category} data-testid={`category-item-${item.category}`}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium text-gray-700">
                       {item.category}
@@ -185,12 +186,13 @@ export function DashboardPage() {
 
         {/* Recent Transactions */}
         {data?.items && data.items.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="recent-transactions" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">最近の取引</h2>
             <div className="space-y-3">
               {data.items.slice(0, 5).map((transaction) => (
                 <div
                   key={transaction.id}
+                  data-testid={`transaction-item-${transaction.id}`}
                   className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
                 >
                   <div className="flex-1">
