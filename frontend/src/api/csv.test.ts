@@ -86,6 +86,37 @@ describe('CSV API Client', () => {
       );
     });
 
+    it('should handle upload cancellation', async () => {
+      const mockFile = new File(['date,amount\n2024-01-01,1000'], 'test.csv', {
+        type: 'text/csv',
+      });
+      const uploadUrl = 'https://s3.amazonaws.com/bucket/key?signature=xyz';
+
+      // Simulate abort/cancel
+      const abortError = new Error('Upload cancelled');
+      (global.fetch as any).mockRejectedValueOnce(abortError);
+
+      await expect(uploadCsvToS3(mockFile, uploadUrl)).rejects.toThrow('Upload cancelled');
+    });
+
+    it('should handle partial upload failure', async () => {
+      const mockFile = new File(['date,amount\n2024-01-01,1000'], 'test.csv', {
+        type: 'text/csv',
+      });
+      const uploadUrl = 'https://s3.amazonaws.com/bucket/key?signature=xyz';
+
+      // Simulate temporary failure
+      (global.fetch as any)
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 503, // Service Unavailable
+        });
+
+      await expect(uploadCsvToS3(mockFile, uploadUrl)).rejects.toThrow(
+        'S3 upload failed with status: 503'
+      );
+    });
+
     it('should throw error when S3 upload fails', async () => {
       const mockFile = new File(['date,amount\n2024-01-01,1000'], 'test.csv', {
         type: 'text/csv',

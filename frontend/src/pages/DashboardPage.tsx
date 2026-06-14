@@ -59,20 +59,30 @@ export function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 data-testid="dashboard-title" className="text-3xl font-bold text-gray-900">ダッシュボード</h1>
-          <p data-testid="user-greeting" className="mt-2 text-sm text-gray-600">
-            {user?.email} さん、こんにちは
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 data-testid="dashboard-title" className="text-3xl font-bold text-gray-900">ダッシュボード</h1>
+              <p data-testid="user-greeting" className="mt-2 text-sm text-gray-600">
+                {user?.email} さん、こんにちは
+              </p>
+            </div>
+            <button
+              data-testid="dashboard-add-button"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+            >
+              + 追加
+            </button>
+          </div>
         </div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Income Card */}
-          <div data-testid="income-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="dashboard-summary-income" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の収入</p>
-                <p data-testid="income-amount" className="mt-2 text-3xl font-bold text-green-600">
+                <p className="mt-2 text-3xl font-bold text-green-600">
                   ¥{summary.totalIncome.toLocaleString('ja-JP')}
                 </p>
               </div>
@@ -95,11 +105,11 @@ export function DashboardPage() {
           </div>
 
           {/* Expense Card */}
-          <div data-testid="expense-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="dashboard-summary-expense" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の支出</p>
-                <p data-testid="expense-amount" className="mt-2 text-3xl font-bold text-red-600">
+                <p className="mt-2 text-3xl font-bold text-red-600">
                   ¥{summary.totalExpense.toLocaleString('ja-JP')}
                 </p>
               </div>
@@ -122,12 +132,11 @@ export function DashboardPage() {
           </div>
 
           {/* Balance Card */}
-          <div data-testid="balance-card" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="dashboard-summary-balance" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">今月の収支</p>
                 <p
-                  data-testid="balance-amount"
                   className={`mt-2 text-3xl font-bold ${
                     summary.balance >= 0 ? 'text-blue-600' : 'text-red-600'
                   }`}
@@ -186,7 +195,7 @@ export function DashboardPage() {
 
         {/* Recent Transactions */}
         {data?.items && data.items.length > 0 && (
-          <div data-testid="recent-transactions" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div data-testid="dashboard-transactions-list" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold mb-4">最近の取引</h2>
             <div className="space-y-3">
               {data.items.slice(0, 5).map((transaction) => (

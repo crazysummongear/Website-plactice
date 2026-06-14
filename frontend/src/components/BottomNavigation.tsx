@@ -42,11 +42,12 @@ export const BottomNavigation: React.FC = () => {
       <div className="flex justify-around items-center h-16">
         {NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
+          const testIdPath = item.path.slice(1) === 'transactions' ? 'list' : item.path.slice(1) === 'csv-import' ? 'csv' : item.path.slice(1);
           return (
             <button
               key={item.path}
               onClick={() => handleClick(item.path)}
-              data-testid={`${item.path.slice(1)}-bottom-nav-button`}
+              data-testid={`nav-bottom-${testIdPath}`}
               className={`flex flex-col items-center justify-center flex-1 h-full border-none bg-transparent cursor-pointer ${
                 isActive
                   ? 'text-blue-600 bg-blue-50'

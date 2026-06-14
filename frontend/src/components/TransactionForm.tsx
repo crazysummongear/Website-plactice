@@ -73,6 +73,7 @@ export function TransactionForm({
           <input
             type="radio"
             value="INCOME"
+            data-testid="transaction-income-radio"
             {...register('incomeExpense')}
             className="w-4 h-4 text-green-600 focus:ring-green-500"
           />
@@ -82,6 +83,7 @@ export function TransactionForm({
           <input
             type="radio"
             value="EXPENSE"
+            data-testid="transaction-expense-radio"
             {...register('incomeExpense')}
             className="w-4 h-4 text-red-600 focus:ring-red-500"
           />
@@ -100,6 +102,7 @@ export function TransactionForm({
         <input
           type="date"
           id="date"
+          data-testid="transaction-date-input"
           {...register('date')}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
@@ -113,6 +116,7 @@ export function TransactionForm({
         </label>
         <select
           id="category"
+          data-testid="transaction-category-select"
           {...register('category')}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
@@ -152,6 +156,7 @@ export function TransactionForm({
           <input
             type="number"
             id="amount"
+            data-testid="transaction-amount-input"
             step="1"
             min="0"
             {...register('amount', { valueAsNumber: true })}
@@ -170,6 +175,7 @@ export function TransactionForm({
         </label>
         <textarea
           id="memo"
+          data-testid="transaction-memo-input"
           rows={3}
           {...register('memo')}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -182,6 +188,7 @@ export function TransactionForm({
       <div className="flex gap-3">
         <button
           type="submit"
+          data-testid="transaction-submit-button"
           disabled={isLoading}
           className={`flex-1 px-4 py-2 text-white rounded-md font-medium ${
             incomeExpense === 'INCOME'
@@ -196,6 +203,7 @@ export function TransactionForm({
         {onCancel && (
           <button
             type="button"
+            data-testid="transaction-cancel-button"
             onClick={onCancel}
             disabled={isLoading}
             className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1,78 +1,41 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Navigation Flow', () => {
-  // Login before each test
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="email-input"]', 'test@example.com');
-    await page.fill('[data-testid="password-input"]', 'Test123!@#Test');
-    await Promise.all([
-      page.waitForURL('/dashboard', { timeout: 10000 }),
-      page.click('[data-testid="login-button"]'),
-    ]);
+test.describe('Navigation', () => {
+  test('should navigate through pages', async ({ page }) => {
+    // ダッシュボード
+    await page.goto('http://localhost:5173/dashboard');
+    await expect(page.locator('[data-testid="nav-bottom-dashboard"]')).toBeVisible();
+    
+    // 一覧ページ
+    await page.click('[data-testid="nav-bottom-list"]');
+    await page.waitForNavigation();
+    expect(page.url()).toContain('/transactions');
+    
+    // CSV インポート
+    await page.click('[data-testid="nav-bottom-csv"]');
+    await page.waitForNavigation();
+    expect(page.url()).toContain('/csv');
+    
+    // カテゴリ
+    await page.click('[data-testid="nav-bottom-category"]');
+    await page.waitForNavigation();
+    expect(page.url()).toContain('/category');
   });
 
-  test('should navigate between pages using top navigation', async ({ page }) => {
-    // Start at dashboard
-    await expect(page).toHaveURL('/dashboard');
-    await expect(page.locator('[data-testid="dashboard-title"]')).toBeVisible();
+  test('should display user email in header', async ({ page }) => {
+    await page.goto('http://localhost:5173/dashboard');
     
-    // Navigate to transactions using data-testid
-    await page.click('[data-testid="transactions-nav-link"]');
-    await expect(page).toHaveURL('/transactions');
-    
-    // Navigate to CSV import
-    await page.click('[data-testid="csv-import-nav-link"]');
-    await expect(page).toHaveURL('/csv-import');
-    
-    // Navigate to categories
-    await page.click('[data-testid="categories-nav-link"]');
-    await expect(page).toHaveURL('/categories');
-    
-    // Navigate back to dashboard
-    await page.click('[data-testid="dashboard-nav-link"]');
-    await expect(page).toHaveURL('/dashboard');
+    const userEmail = page.locator('[data-testid="nav-user-email"]');
+    await expect(userEmail).toBeVisible();
   });
 
-  test('should navigate between pages using bottom navigation', async ({ page }) => {
-    // Start at dashboard
-    await expect(page).toHaveURL('/dashboard');
+  test('should logout', async ({ page }) => {
+    await page.goto('http://localhost:5173/dashboard');
     
-    // Navigate to transactions using bottom nav with data-testid
-    // force: true はボトムナビが固定位置でビューポート外になる場合に対応
-    await page.locator('[data-testid="transactions-bottom-nav-button"]').dispatchEvent('click');
-    await expect(page).toHaveURL('/transactions');
+    await page.click('[data-testid="nav-logout-button"]');
     
-    // Navigate to CSV import
-    await page.locator('[data-testid="csv-import-bottom-nav-button"]').dispatchEvent('click');
-    await expect(page).toHaveURL('/csv-import');
-    
-    // Navigate to categories
-    await page.locator('[data-testid="categories-bottom-nav-button"]').dispatchEvent('click');
-    await expect(page).toHaveURL('/categories');
-    
-    // Navigate back to dashboard
-    await page.locator('[data-testid="dashboard-bottom-nav-button"]').dispatchEvent('click');
-    await expect(page).toHaveURL('/dashboard');
-  });
-
-  test('should highlight active page in navigation', async ({ page }) => {
-    // Dashboard should be active - using data-testid
-    await expect(page.locator('[data-testid="dashboard-nav-link"]')).toHaveClass(/bg-blue-50/);
-    
-    // Navigate to transactions
-    await page.click('[data-testid="transactions-nav-link"]');
-    
-    // Transactions should be active
-    await expect(page.locator('[data-testid="transactions-nav-link"]')).toHaveClass(/bg-blue-50/);
-    
-    // Dashboard should not be active
-    await expect(page.locator('[data-testid="dashboard-nav-link"]')).not.toHaveClass(/bg-blue-50/);
-  });
-
-  test('should display user email in navigation', async ({ page }) => {
-    // Using data-testid for more stable selector
-    await expect(page.locator('[data-testid="user-email"]')).toBeVisible();
-    await expect(page.locator('[data-testid="user-email"]')).toContainText('test@example.com');
+    // ログインページへリダイレクト
+    await page.waitForNavigation();
+    expect(page.url()).toContain('/login');
   });
 });

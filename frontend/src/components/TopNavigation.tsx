@@ -31,12 +31,12 @@ export function TopNavigation() {
   ];
 
   return (
-    <nav className="bg-white border-b border-gray-200 shadow-sm">
+    <nav className="bg-white border-b border-gray-200 shadow-sm" data-testid="nav-mobile-menu">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link to="/dashboard" className="flex items-center space-x-2">
+            <Link to="/dashboard" data-testid="nav-logo" className="flex items-center space-x-2">
               <span className="text-2xl">💰</span>
               <span className="text-xl font-bold text-gray-900">家計簿アプリ</span>
             </Link>
@@ -66,10 +66,10 @@ export function TopNavigation() {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
-            <span data-testid="user-email" className="text-sm text-gray-600">{user?.email}</span>
+            <span data-testid="nav-user-email" className="text-sm text-gray-600">{user?.email}</span>
             <button
               onClick={handleLogout}
-              data-testid="logout-button"
+              data-testid="nav-logout-button"
               className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
             >
               ログアウト

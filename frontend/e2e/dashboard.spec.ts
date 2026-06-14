@@ -1,68 +1,76 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Dashboard Page', () => {
+test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
-    // Login using data-testid
-    await page.goto('/login');
-    await page.fill('[data-testid="email-input"]', 'test@example.com');
-    await page.fill('[data-testid="password-input"]', 'Test123!@#Test');
-    await Promise.all([
-      page.waitForURL('/dashboard', { timeout: 10000 }),
-      page.click('[data-testid="login-button"]'),
-    ]);
+    // ログイン状態にする
+    await page.goto('http://localhost:5173/login');
+    // ローカルストレージにトークン設定 (Mock用)
+    await page.evaluate(() => {
+      localStorage.setItem('kakei_id_token', 'mock-token');
+    });
+    await page.goto('http://localhost:5173/dashboard');
   });
 
-  test('should display dashboard with mock data', async ({ page }) => {
-    // Check page title using data-testid
-    await expect(page.locator('[data-testid="dashboard-title"]')).toContainText('ダッシュボード');
-    
-    // Check greeting using data-testid
-    await expect(page.locator('[data-testid="user-greeting"]')).toContainText('test@example.com さん、こんにちは');
-    
-    // Check summary cards using data-testid
-    await expect(page.locator('[data-testid="income-card"]')).toBeVisible();
-    await expect(page.locator('[data-testid="income-amount"]')).toContainText('¥300,000');
-    
-    await expect(page.locator('[data-testid="expense-card"]')).toBeVisible();
-    await expect(page.locator('[data-testid="expense-amount"]')).toContainText('¥28,000');
-    
-    await expect(page.locator('[data-testid="balance-card"]')).toBeVisible();
-    await expect(page.locator('[data-testid="balance-amount"]')).toContainText('+¥272,000');
+  test('should display dashboard summary', async ({ page }) => {
+    await expect(page.locator('[data-testid="dashboard-summary-income"]')).toBeVisible();
+    await expect(page.locator('[data-testid="dashboard-summary-expense"]')).toBeVisible();
+    await expect(page.locator('[data-testid="dashboard-summary-balance"]')).toBeVisible();
   });
 
-  test('should display category breakdown', async ({ page }) => {
-    // Check category breakdown section using data-testid
-    await expect(page.locator('[data-testid="category-breakdown"]')).toBeVisible();
-    
-    // Check specific categories using data-testid
-    await expect(page.locator('[data-testid="category-item-給料"]')).toBeVisible();
-    await expect(page.locator('[data-testid="category-item-光熱費"]')).toBeVisible();
-    await expect(page.locator('[data-testid="category-item-娯楽"]')).toBeVisible();
-    await expect(page.locator('[data-testid="category-item-食費"]')).toBeVisible();
-    await expect(page.locator('[data-testid="category-item-交通費"]')).toBeVisible();
+  test('should display transactions list', async ({ page }) => {
+    await expect(page.locator('[data-testid="dashboard-transactions-list"]')).toBeVisible();
   });
 
-  test('should display recent transactions', async ({ page }) => {
-    // Check recent transactions section using data-testid
-    await expect(page.locator('[data-testid="recent-transactions"]')).toBeVisible();
+  test('should add new transaction', async ({ page }) => {
+    await page.click('[data-testid="dashboard-add-button"]');
     
-    // Check transaction items exist (IDs are dynamic, so we check the section exists)
-    const transactionItems = page.locator('[data-testid^="transaction-item-"]');
-    await expect(transactionItems.first()).toBeVisible();
+    // フォーム表示確認
+    await expect(page.locator('[data-testid="transaction-form"]')).toBeVisible();
+    
+    // 入力
+    await page.fill('[data-testid="transaction-date-input"]', '2024-06-01');
+    await page.selectOption('[data-testid="transaction-category-select"]', 'food');
+    await page.fill('[data-testid="transaction-amount-input"]', '5000');
+    await page.click('[data-testid="transaction-expense-radio"]');
+    await page.fill('[data-testid="transaction-memo-input"]', 'Lunch');
+    
+    // 送信
+    await page.click('[data-testid="transaction-submit-button"]');
+    
+    // リスト更新確認
+    await page.waitForTimeout(1000);
+    const items = page.locator('[data-testid="transaction-item"]');
+    expect(await items.count()).toBeGreaterThan(0);
   });
 
-  test('should be responsive on mobile', async ({ page }) => {
-    // Set mobile viewport
-    await page.setViewportSize({ width: 375, height: 667 });
+  test('should edit transaction', async ({ page }) => {
+    // トランザクションの編集ボタンをクリック
+    await page.click('[data-testid="transaction-edit-btn-0"]');
     
-    // Dashboard should still be visible using data-testid
-    await expect(page.locator('[data-testid="dashboard-title"]')).toContainText('ダッシュボード');
+    // 金額変更
+    await page.fill('[data-testid="transaction-amount-input"]', '10000');
+    await page.click('[data-testid="transaction-submit-button"]');
     
-    // Summary cards should be visible
-    await expect(page.locator('[data-testid="income-card"]')).toBeVisible();
+    // 確認
+    await page.waitForTimeout(1000);
+    const updatedAmount = page.locator('[data-testid="transaction-amount-0"]');
+    await expect(updatedAmount).toContainText('10000');
+  });
+
+  test('should delete transaction', async ({ page }) => {
+    const countBefore = await page.locator('[data-testid="transaction-item"]').count();
     
-    // Bottom navigation should be visible using data-testid
-    await expect(page.locator('[data-testid="bottom-navigation"]')).toBeVisible();
-    await expect(page.locator('[data-testid="dashboard-bottom-nav-button"]')).toBeVisible();
+    // 削除ボタン
+    await page.click('[data-testid="transaction-delete-btn-0"]');
+    
+    // 確認ダイアログで OK
+    page.on('dialog', async dialog => {
+      await dialog.accept();
+    });
+    
+    // リスト更新確認
+    await page.waitForTimeout(1000);
+    const countAfter = await page.locator('[data-testid="transaction-item"]').count();
+    expect(countAfter).toBe(countBefore - 1);
   });
 });

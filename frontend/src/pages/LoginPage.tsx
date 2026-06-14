@@ -79,7 +79,7 @@ export default function LoginPage() {
 
         {/* Error message */}
         {authError && (
-          <div data-testid="auth-error" className="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
+          <div data-testid="login-error-message" className="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
             <p className="text-sm font-medium text-red-800">{authError}</p>
           </div>
         )}
@@ -94,7 +94,7 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
-              data-testid="email-input"
+              data-testid="login-email-input"
               placeholder="example@example.com"
               {...register('email')}
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
@@ -115,7 +115,7 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
-              data-testid="password-input"
+              data-testid="login-password-input"
               placeholder="••••••••"
               {...register('password')}
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
@@ -131,7 +131,7 @@ export default function LoginPage() {
           {/* Submit button */}
           <button
             type="submit"
-            data-testid="login-button"
+            data-testid="login-submit-button"
             disabled={isLoading}
             className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
@@ -171,7 +171,7 @@ export default function LoginPage() {
             アカウントをお持ちでないですか？{' '}
             <Link
               to="/signup"
-              data-testid="signup-link"
+              data-testid="login-signup-link"
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
             >
               サインアップ

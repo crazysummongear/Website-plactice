@@ -21,7 +21,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://your-api-gate
  * Get ID token from local storage
  */
 function getIdToken(): string {
-  const idToken = localStorage.getItem('idToken');
+  const idToken = localStorage.getItem('kakei_id_token');
   if (!idToken) {
     throw new Error('Not authenticated');
   }

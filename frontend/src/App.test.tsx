@@ -2,20 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import App from './App';
 
-// Mock the auth hook
-vi.mock('./hooks/useAuth', () => ({
-  useAuth: () => ({
-    isAuthenticated: false,
-    loading: false,
-    user: null,
-    idToken: null,
-    login: vi.fn(),
-    signup: vi.fn(),
-    confirmEmail: vi.fn(),
-    logout: vi.fn(),
-    resetPassword: vi.fn(),
-  }),
-}));
+// Mock the auth hook - must be at the top for hoisting
+vi.mock('./hooks/useAuth');
+
+const mockUseAuth = vi.mocked(useAuth);
 
 describe('App Router Integration', () => {
   it('renders without crashing', () => {
